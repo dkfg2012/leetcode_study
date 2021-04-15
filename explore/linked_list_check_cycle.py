@@ -12,11 +12,13 @@ class Solution(object):
         """
         try:
             slow = head
-            fast = head.next
-            while slow is not fast:                
+            fast = head
+            while fast != None or fast.next != None:                
                 slow = slow.next
                 fast = fast.next.next
-            return True
+                if slow == fast:
+                    return True
         except:
             return False
             
+        
