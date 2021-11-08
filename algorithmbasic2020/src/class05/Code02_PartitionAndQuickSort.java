@@ -58,6 +58,38 @@ public class Code02_PartitionAndQuickSort {
 		return new int[] { less + 1, more };
 	}
 
+	//my code
+	public static int[] myNetherlandFlag(int[] arr, int L, int R){
+		if(L > R){
+			return new int[] {-1, -1};
+		}
+		if(L == R){
+			return new int[] {L, R};
+		}
+		int cur = L;
+		int less = L - 1;//小於區域的邊界
+		int more = R; //取最右格做partition,同時也是大於區域的邊界
+		while(cur < more){
+			//因為數組是從左往右掃描的，所以可以假設左邊是sorted右邊沒有
+			//假設less = 2, cur = 4, 說明小於區域是0-2,等於區域是3開始
+			//假設arr[4]小於arr[R],那麼說明4是應該放在小於區域,現在的小於區域是0-3
+			//交換前,0-2小於,3相等,4小於,所以3,4交換後變為0-3為小於，4為等於
+			if(arr[cur] < arr[R]){
+				swap(arr, cur++, ++less);
+			}else if(arr[cur] > arr[R]){
+				//因為大於區域往左擴張,因為我們並不知道more(或者R)的值,它可能大於等於小於,
+				//唯一確定的是cur大於R,但不同於左邊區域是已排的,右邊是還沒排
+				//所以cur不能++,必須在交換後拿來再作檢查
+				swap(arr, cur, --more);
+			}else{
+				cur++;
+			}
+		}
+		swap(arr, more, R); // <[R]   =[R]   >[R]
+		return new int[] { less + 1, more };
+	}
+	//
+
 	public static void quickSort1(int[] arr) {
 		if (arr == null || arr.length < 2) {
 			return;
@@ -93,9 +125,10 @@ public class Code02_PartitionAndQuickSort {
 			return;
 		}
 		// [ equalArea[0]  ,  equalArea[0]]
-		int[] equalArea = netherlandsFlag(arr, L, R);
-		process2(arr, L, equalArea[0] - 1);
-		process2(arr, equalArea[1] + 1, R);
+//		int[] equalArea = netherlandsFlag(arr, L, R);
+		int[] equalArea = myNetherlandFlag(arr, L, R);
+		process2(arr, L, equalArea[0] - 1); //因為less最後是++的,所以-1才是右邊界
+		process2(arr, equalArea[1] + 1, R); //與上同理, +1才是左邊界
 	}
 
 	
@@ -115,7 +148,7 @@ public class Code02_PartitionAndQuickSort {
 		if (L >= R) {
 			return;
 		}
-		swap(arr, L + (int) (Math.random() * (R - L + 1)), R);
+		swap(arr, L + (int) (Math.random() * (R - L + 1)), R); //隨機算位置和最右側交換, 再進行快排
 		int[] equalArea = netherlandsFlag(arr, L, R);
 		process3(arr, L, equalArea[0] - 1);
 		process3(arr, equalArea[1] + 1, R);
@@ -187,6 +220,8 @@ public class Code02_PartitionAndQuickSort {
 			quickSort3(arr3);
 			if (!isEqual(arr1, arr2) || !isEqual(arr2, arr3)) {
 				succeed = false;
+				printArray(arr2);
+				printArray(arr3);
 				break;
 			}
 		}
