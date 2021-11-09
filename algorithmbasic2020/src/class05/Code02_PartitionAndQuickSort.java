@@ -85,7 +85,12 @@ public class Code02_PartitionAndQuickSort {
 				cur++;
 			}
 		}
-		swap(arr, more, R); // <[R]   =[R]   >[R]
+		//R一直作為partition,所以在快排後,L-less是小於區,less+1 - more-1是等於區, more-R-1是大於區,R自己是partition
+		//最後這個交換是將作為partition的R和大於區邊界的more交換
+		//交換後,less+1 - more(現在在more上的是原先作為partition的R,因為是作為對比的partition,它必然要在等於區)
+		//more+1 - R是大於區(原來是more - R-1, 相當於右移一格)
+		swap(arr, more, R);
+		//最後返回less+1和more是等於區域內的左邊界和右邊界
 		return new int[] { less + 1, more };
 	}
 	//
@@ -127,8 +132,8 @@ public class Code02_PartitionAndQuickSort {
 		// [ equalArea[0]  ,  equalArea[0]]
 //		int[] equalArea = netherlandsFlag(arr, L, R);
 		int[] equalArea = myNetherlandFlag(arr, L, R);
-		process2(arr, L, equalArea[0] - 1); //因為less最後是++的,所以-1才是右邊界
-		process2(arr, equalArea[1] + 1, R); //與上同理, +1才是左邊界
+		process2(arr, L, equalArea[0] - 1); //返回的是等於區的左邊界(在等於區域內)，所以-1才是小於區域的右邊界(回到小於區域)
+		process2(arr, equalArea[1] + 1, R); //與上同理, +1才是大於區域的左邊界
 	}
 
 	
