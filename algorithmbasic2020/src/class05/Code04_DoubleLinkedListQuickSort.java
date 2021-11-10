@@ -217,6 +217,163 @@ public class Code04_DoubleLinkedListQuickSort {
 		return h;
 	}
 
+
+
+	// my code
+	//大於/等於/小於區域的doubly linked list
+	public static class myHeadTail{
+		private Node head;
+		private Node end;
+		public myHeadTail(Node head, Node end){
+			this.head = head;
+			this.end = end;
+		}
+	}
+
+	public static Node myQuickSort(Node n){
+		if(n == null){
+			return n;
+		}
+		int NodeListLength = 0;
+		Node current = n;
+		Node end = null;
+		while(current != null){
+			NodeListLength++;
+			end = current;
+			current = current.next;
+		}
+		return myProcess(n, end, NodeListLength).head;
+	}
+
+	public static myHeadTail myProcess(Node head, Node end, int len){
+		if(head == null){
+			return null;
+		}
+		if(head == end){
+			return new myHeadTail(head, end);
+		}
+		int rand = (int) (Math.random() * len);
+
+		Node randNode = head;
+		while(rand > 0){
+			randNode = randNode.next;
+			rand--;
+		}
+		//把pivot node分離出來
+		//如果隨機抽到邊界的node
+		if(randNode == head || randNode == end){
+			if(randNode == head){
+				head = randNode.next; //將randomNode從這部分的linked list脫離出來，開頭改為下一個
+				head.last = null;
+			}else{
+				end = randNode.last;
+				end.next = null; //同上
+			}
+		}else{
+			Node next = randNode.next;
+			Node pre = randNode.last;
+			next.last = pre;
+			pre.next = next;
+		}
+		randNode.next = null;
+		randNode.last = null;
+		myInfo info = myPartition(head, randNode);
+		myHeadTail leftHT = myProcess(info.leftHThead, info.leftHTtail, info.leftHTlen);
+		myHeadTail rightHT = myProcess(info.rightHThead, info.rightHTtail, info.rightHTlen);
+		//把小於,等於,大於區域串聯在一起
+		Node Returnhead = info.equalHThead;
+		Node Returntail = info.equalHTtail;
+		if(leftHT != null){
+			leftHT.end.next = info.equalHThead;
+			info.equalHThead.last = leftHT.end;
+			Returnhead = leftHT.head;
+		}
+		if(rightHT != null){
+			rightHT.head.last = info.equalHTtail;
+			info.equalHTtail.next = rightHT.head;
+			Returntail = rightHT.end;
+		}
+		return new myHeadTail(Returnhead, Returntail);
+	}
+
+
+	public static class myInfo{
+		private Node leftHThead;
+		private Node leftHTtail;
+		private int leftHTlen;
+		private Node rightHThead;
+		private Node rightHTtail;
+		private int rightHTlen;
+		private Node equalHThead;
+		private Node equalHTtail;
+		private int equalHTlen;
+		public myInfo(Node leftHThead, Node leftHTtail,
+					int leftHTlen, Node rightHThead,
+					Node rightHTtail, int rightHTlen,
+					Node equalHThead, Node equalHTtail,
+					int equalHTlen
+					){
+			this.leftHThead = leftHThead;
+			this.leftHTtail = leftHTtail;
+			this.leftHTlen = leftHTlen;
+			this.rightHThead = rightHThead;
+			this.rightHTtail = rightHTtail;
+			this.rightHTlen = rightHTlen;
+			this.equalHThead = equalHThead;
+			this.equalHTtail = equalHTtail;
+			this.equalHTlen = equalHTlen;
+		}
+	}
+
+	public static myInfo myPartition(Node L, Node pivot){
+		Node leftHead = null;
+		Node leftEnd = null;
+		int leftLen = 0;
+		Node eqlHead = pivot;
+		Node eqlEnd = pivot;
+		int eqlLen = 1;
+		Node rightHead = null;
+		Node rightEnd = null;
+		int rightLen = 0;
+		Node cur = L;
+		Node temp = null;
+		while(cur != null){
+			temp = cur.next;
+			cur.last = null;
+			cur.next = null;
+			if(cur.value < pivot.value){
+				leftLen++;
+				if(leftHead == null){
+					leftHead = cur;
+					leftEnd = cur;
+				}else{
+					leftEnd.next = cur;
+					cur.last = leftEnd;
+					leftEnd = cur;
+				}
+			}else if(cur.value > pivot.value){
+				rightLen++;
+				if(rightHead == null){
+					rightHead = cur;
+					rightEnd = cur;
+				}else{
+					rightEnd.next = cur;
+					cur.last = rightEnd;
+					rightEnd = cur;
+				}
+			}else{
+				eqlLen++;
+				eqlEnd.next = cur;
+				cur.last = eqlEnd;
+				eqlEnd = cur;
+			}
+			cur = temp;
+		}
+		return new myInfo(leftHead, leftEnd, leftLen, rightHead, rightEnd, rightLen, eqlHead, eqlEnd, eqlLen);
+	}
+
+
+
 	// 为了测试
 	public static Node generateRandomDoubleLinkedList(int n, int v) {
 		if (n == 0) {
@@ -288,7 +445,8 @@ public class Code04_DoubleLinkedListQuickSort {
 			Node head1 = generateRandomDoubleLinkedList(size, V);
 			Node head2 = cloneDoubleLinkedList(head1);
 			Node sort1 = quickSort(head1);
-			Node sort2 = sort(head2);
+//			Node sort2 = sort(head2);
+			Node sort2 = myQuickSort(head2);
 			if (!equal(sort1, sort2)) {
 				System.out.println("出错了!");
 				break;

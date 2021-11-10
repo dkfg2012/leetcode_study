@@ -1,9 +1,6 @@
 package class07;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Code02_EveryStepShowBoss {
 
@@ -227,6 +224,33 @@ public class Code02_EveryStepShowBoss {
 		}
 		return ans;
 	}
+	// end code used for testing
+
+
+
+	//my code
+	public static class myCustomer{
+		private int id;
+		private int buyTimes;
+		private int enterTime;
+		public myCustomer(int id, int buyTimes, int enterTime){
+			this.id = id;
+			this.buyTimes = buyTimes;
+			this.enterTime = enterTime;
+		}
+	}
+
+
+//	public static class TopKHeap{
+//		private int userArrayTime;
+//		private int opTime;
+//	}
+//
+//	public static List<List<Integer>> myTopK(int[] arr, boolean[] op, int k)
+//
+//	}
+
+
 
 	// 为了测试
 	public static class Data {

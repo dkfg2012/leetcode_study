@@ -4,6 +4,79 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class Code02_Heap {
+	//my code
+	public static class maxHeap{
+		private int[] heap;
+		private final int limit;
+		private int heapSize;
+		public maxHeap(int limit){
+			heap = new int[limit];
+			this.limit = limit;
+			this.heapSize = 0;
+		}
+
+		public boolean isEmpty(){
+			return heapSize == 0;
+		}
+
+		public boolean isFull(){
+			return heapSize == limit;
+		}
+
+		public void push(int value){
+			if(isFull()){
+				throw new RuntimeException("heap is full");
+			}
+			heap[heapSize] = value;
+			heapSize++;
+			int index = heapSize - 1;
+			while(heap[index] > heap[(index - 1) / 2]){
+				swap(heap, index, (index - 1) / 2);
+				index = (index - 1) / 2;
+			}
+		}
+
+		private void swap(int[] arr, int a, int b){
+			arr[a] = arr[a] ^ arr[b];
+			arr[b] = arr[a] ^ arr[b];
+			arr[a] = arr[a] ^ arr[b];
+		}
+
+		public int pop(){
+			int r = heap[0];
+			swap(heap, 0, heapSize-1);
+			heapSize--;
+			heapify(heap, 0, heapSize);
+			return r;
+		}
+
+		private void heapify(int[] arr, int index, int heapSize){
+			int left = index * 2 + 1;
+			int largestIndex = -1;
+			while(left < heapSize){
+				if(left + 1 < heapSize && arr[left + 1] > arr[left]){ //left tree head node + 1就是right tree head node
+					largestIndex = left + 1;
+				}else{
+					largestIndex = left;
+				}
+				if(arr[largestIndex] > arr[index]){
+					largestIndex = largestIndex;
+				}else{
+					largestIndex = index;
+				}
+
+				if(largestIndex == index){
+					break;
+				}
+
+				swap(arr, index, largestIndex); //內容換了,index指著的位置是一樣的,所以largestIndex還是subtree的head node
+				index = largestIndex;
+				left = index * 2 + 1; //檢查subtree的subtree
+			}
+
+		}
+	}
+
 
 	public static class MyMaxHeap {
 		private int[] heap;
@@ -165,7 +238,8 @@ public class Code02_Heap {
 		int testTimes = 1000000;
 		for (int i = 0; i < testTimes; i++) {
 			int curLimit = (int) (Math.random() * limit) + 1;
-			MyMaxHeap my = new MyMaxHeap(curLimit);
+//			MyMaxHeap my = new MyMaxHeap(curLimit);
+			maxHeap my = new maxHeap(curLimit);
 			RightMaxHeap test = new RightMaxHeap(curLimit);
 			int curOpTimes = (int) (Math.random() * limit);
 			for (int j = 0; j < curOpTimes; j++) {

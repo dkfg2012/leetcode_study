@@ -8,6 +8,8 @@ import java.util.List;
 /*
  * T一定要是非基础类型，有基础类型需求包一层
  */
+
+//加強堆,用戶可要求刪除數據,堆需要快速找到對應的數據刪除後也要保持堆結構
 public class HeapGreater<T> {
 
 	private ArrayList<T> heap;
@@ -17,7 +19,7 @@ public class HeapGreater<T> {
 
 	public HeapGreater(Comparator<T> c) {
 		heap = new ArrayList<>();
-		indexMap = new HashMap<>();
+		indexMap = new HashMap<>(); //建立object和index位置的映射表,用戶輸入後能夠立刻返回obj在heap array中的位置
 		heapSize = 0;
 		comp = c;
 	}
@@ -39,6 +41,7 @@ public class HeapGreater<T> {
 	}
 
 	public void push(T obj) {
+		//push是在array的最後添加
 		heap.add(obj);
 		indexMap.put(obj, heapSize);
 		heapInsert(heapSize++);
@@ -54,6 +57,10 @@ public class HeapGreater<T> {
 	}
 
 	public void remove(T obj) {
+		//拿最後的obj作為替代
+		//先獲取要remove的obj的位置
+		//heap size - 1, 並且把上述的位置交給最後obj(作為替代), 把其插入進這個index內,並且更新hashmap
+		//然後進行heapify確保heap的性質
 		T replace = heap.get(heapSize - 1);
 		int index = indexMap.get(obj);
 		indexMap.remove(obj);
@@ -80,6 +87,11 @@ public class HeapGreater<T> {
 	}
 
 	private void heapInsert(int index) {
+		//對比index和它的tree head,從最底層一層一層往上推來確保heap的特性沒變
+		//返回負數即index即index的obj應該放在head的前面,即兩者需要互換
+		//這裡並沒有提供對比的細節,但是如果compare(a,b)得出-1,即a在b的前面
+		//而這裡,index毫無疑問是在(index-1)/2 (index-1/2 > index)的後面
+		//說明放的位置不對,需要交換
 		while (comp.compare(heap.get(index), heap.get((index - 1) / 2)) < 0) {
 			swap(index, (index - 1) / 2);
 			index = (index - 1) / 2;
