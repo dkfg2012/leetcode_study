@@ -1,5 +1,6 @@
 package class07;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Code02_EveryStepShowBoss {
@@ -240,15 +241,109 @@ public class Code02_EveryStepShowBoss {
 		}
 	}
 
+	public static class myCandidateComparator implements Comparator<myCustomer>{
+		@Override
+		public int compare(myCustomer c1, myCustomer c2){
+			if(c1.buyTimes != c2.buyTimes){
+				return c1.buyTimes > c2.buyTimes ? -1 : 1; //candidate heap, those have more buytime on the front
+			}else{
+				return c1.enterTime < c2.enterTime ? -1 : 1; //those earlier in the front
+			}
+		}
+	}
 
-//	public static class TopKHeap{
-//		private int userArrayTime;
-//		private int opTime;
-//	}
-//
-//	public static List<List<Integer>> myTopK(int[] arr, boolean[] op, int k)
-//
-//	}
+	public static class myTopHeapComparator implements Comparator<myCustomer>{
+		@Override
+		public int compare(myCustomer c1, myCustomer c2){
+			if(c1.buyTimes != c2.buyTimes){
+				return c1.buyTimes < c2.buyTimes ? -1 : 1; //those who buy less are in the front
+			}else{
+				return c1.enterTime < c2.enterTime ? -1 : 1;
+			}
+		}
+	}
+
+	public static class TopKHeap{
+		private HashMap<Integer, myCustomer> customerMap;
+		private myHeap<myCustomer> candidateHeap;
+		private myHeap<myCustomer> topKHeap;
+		private final int kLimit;
+
+		TopKHeap(int k){
+			this.kLimit = k;
+			this.customerMap = new HashMap<Integer, myCustomer>();
+			candidateHeap = new myHeap<>(new myCandidateComparator());
+			topKHeap = new myHeap<>(new myTopHeapComparator());
+		}
+
+		public List<Integer> getTopK(){
+			List<myCustomer> customers = topKHeap.getAllElements();
+			List<Integer> r = new ArrayList<>();
+			for(myCustomer c : customers){
+				r.add(c.id);
+			}
+			return r;
+		}
+
+		public void operate(int time, int id, boolean buyOrRefund){
+			myTopHeapComparator thComp = new myTopHeapComparator();
+			if(customerMap.containsKey(id)){
+				//old customer
+				myCustomer customer = customerMap.get(id);
+				if(buyOrRefund){
+					//buy
+					int buyTime = customer.buyTimes + 1;
+					myCustomer lastKHeapCus = topKHeap.peek();
+					if(thComp.compare(lastKHeapCus, customer) < 0){
+						topKHeap.pop();
+						topKHeap.push(new myCustomer(id, buyTime, time));
+						candidateHeap.push(new myCustomer(lastKHeapCus.id, lastKHeapCus.buyTimes, time));
+					}else{
+						candidateHeap.push(new myCustomer(id, buyTime, time));
+					}
+				}else{
+					//refund
+					int buyTime = customer.buyTimes - 1;
+					if(buyTime == 0){
+						if(candidateHeap.contains(customer)){
+							candidateHeap.remove(customer);
+						}else{
+							topKHeap.remove(customer);
+						}
+						customerMap.remove(id);
+					}
+				}
+
+			}else{
+				//first see this customer
+				if(buyOrRefund){
+					//he buy
+					myCustomer customer = new myCustomer(id, 1, time);
+					customerMap.put(id, customer);
+					if(topKHeap.size() < kLimit){
+						//topKHeap still have space
+						topKHeap.push(customer);
+					}else{
+						//topKHeap dont have space, new customer add into waiting list
+						candidateHeap.push(customer);
+					}
+				}else{
+					//he refund
+				}
+			}
+		}
+
+	}
+
+	public static List<List<Integer>> mytopK(int[] arr, boolean[] op, int k) {
+		List<List<Integer>> ans = new ArrayList<>();
+		TopKHeap tkh = new TopKHeap(k);
+		for (int i = 0; i < arr.length; i++) {
+			tkh.operate(i, arr[i], op[i]);
+			ans.add(tkh.getTopK());
+		}
+		return ans;
+	}
 
 
 
