@@ -230,10 +230,107 @@ public class Code01_TrieTree {
 			int count = 0;
 			for (String cur : box.keySet()) {
 				if (cur.startsWith(pre)) {
-					count++;
+//					count++;
+					count += box.get(cur);
 				}
 			}
 			return count;
+		}
+	}
+
+	//my code
+	public static class myNode{
+		private int pass;
+		private int end;
+		private myNode[] nexts;
+		public myNode(){
+			this.pass = 0;
+			this.end = 0;
+			this.nexts = new myNode[26];
+		}
+	}
+	public static class myTrie{
+		private myNode root;
+		public myTrie(){
+			this.root = new myNode();
+		}
+
+		public void insert(String word){
+			if(word.length() == 0){
+				return;
+			}
+			char[] chars = word.toCharArray();
+			myNode node = root;
+			node.pass++;
+			int charIndex = 0;
+			for(int i = 0; i < chars.length; i++){
+				charIndex = chars[i] - 'a';
+				if(node.nexts[charIndex] == null){
+					node.nexts[charIndex] = new myNode();
+				}
+				node = node.nexts[charIndex];
+				node.pass++;
+			}
+			node.end++;
+		}
+
+		//之前加入过几次
+		public int search(String word){
+			if(word == null){
+				return 0;
+			}
+			myNode node = root;
+			char[] chars = word.toCharArray();
+			int charIndex = 0;
+			for(int i = 0; i < chars.length; i++){
+				charIndex = chars[i] - 'a';
+				if(node.nexts[charIndex] != null){
+					node = node.nexts[charIndex];
+				}else{
+					return 0;
+				}
+			}
+			return node.end;
+		}
+
+		public void delete(String word){
+			if(word.length() == 0){
+				return;
+			}
+			if(search(word) == 0){
+				return;
+			}
+			myNode node = root;
+			char[] chars = word.toCharArray();
+			int charIndex = 0;
+			for(int i = 0; i < chars.length; i++){
+				charIndex = chars[i] - 'a';
+				node.nexts[charIndex].pass--;
+				if(node.nexts[charIndex].pass == 0){
+					node.nexts[charIndex] = null;
+					return;
+				}
+				node = node.nexts[charIndex];
+			}
+			node.end--;
+		}
+
+		public int prefixNumber(String pre){
+			if(pre == null){
+				return 0;
+			}
+			myNode node = root;
+			char[] chars = pre.toCharArray();
+			int charIndex = 0;
+			for(int i = 0; i < chars.length; i++){
+				charIndex = chars[i] - 'a';
+				if(node.nexts[charIndex] != null){
+					node = node.nexts[charIndex];
+				}else{
+					return 0;
+				}
+			}
+			return node.pass;
 		}
 	}
 
@@ -263,7 +360,8 @@ public class Code01_TrieTree {
 		for (int i = 0; i < testTimes; i++) {
 			String[] arr = generateRandomStringArray(arrLen, strLen);
 			Trie1 trie1 = new Trie1();
-			Trie2 trie2 = new Trie2();
+//			Trie2 trie2 = new Trie2();
+			myTrie trie2 = new myTrie();
 			Right right = new Right();
 			for (int j = 0; j < arr.length; j++) {
 				double decide = Math.random();
@@ -281,6 +379,11 @@ public class Code01_TrieTree {
 					int ans3 = right.search(arr[j]);
 					if (ans1 != ans2 || ans2 != ans3) {
 						System.out.println("Oops!");
+						break;
+					}
+					if (ans1 != ans3) {
+						System.out.println("Oops!");
+						break;
 					}
 				} else {
 					int ans1 = trie1.prefixNumber(arr[j]);
@@ -288,6 +391,11 @@ public class Code01_TrieTree {
 					int ans3 = right.prefixNumber(arr[j]);
 					if (ans1 != ans2 || ans2 != ans3) {
 						System.out.println("Oops!");
+						break;
+					}
+					if (ans1 != ans3) {
+						System.out.println("Oops!");
+						break;
 					}
 				}
 			}
