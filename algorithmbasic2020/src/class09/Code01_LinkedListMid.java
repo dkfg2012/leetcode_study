@@ -70,6 +70,8 @@ public class Code01_LinkedListMid {
 		return slow;
 	}
 
+
+	//test code
 	public static Node right1(Node head) {
 		if (head == null) {
 			return null;
@@ -122,6 +124,76 @@ public class Code01_LinkedListMid {
 		return arr.get((arr.size() - 2) / 2);
 	}
 
+
+
+
+	//my code
+	public static Node myMidAndMidUpper(Node head){
+		if(head == null || head.next == null || head.next.next == null){
+			return head;
+		}
+		Node slowP = head;
+		Node fastP = head;
+		while(fastP.next != null && fastP.next.next != null){
+			slowP = slowP.next;
+			fastP = fastP.next.next;
+		}
+		return slowP;
+	}
+
+	public static Node myMidAndMidDown(Node head){
+		if(head == null || head.next == null || head.next.next == null){
+			return head;
+		}
+		Node slowP = head;
+		Node fastP = head;
+		while(fastP.next != null && fastP.next.next != null){
+			slowP = slowP.next;
+			fastP = fastP.next.next;
+		}
+
+		if(fastP.next == null){
+			return slowP;
+		}else{
+			return slowP.next;
+		}
+	}
+
+	public static Node myMidUpperAndMidUpperUpper(Node head){
+		if(head == null || head.next == null || head.next.next == null){
+			return head;
+		}
+		Node slowP = head;
+		Node fastP = head.next.next;
+		while(fastP.next != null && fastP.next.next != null){
+			slowP = slowP.next;
+			fastP = fastP.next.next;
+		}
+		return slowP;
+	}
+
+	public static Node myMidLowerAndMidLowerLower(Node head){
+		if(head == null || head.next == null || head.next.next == null){
+			return head;
+		}
+		Node slowP = head;
+		Node fastP = head.next.next;
+		while(fastP.next != null && fastP.next.next != null){
+			slowP = slowP.next;
+			fastP = fastP.next.next;
+		}
+		if(fastP.next == null){
+			return slowP.next.next.next;
+		}else{
+			return slowP;
+		}
+
+	}
+
+
+
+
+
 	public static void main(String[] args) {
 		Node test = null;
 		test = new Node(0);
@@ -133,22 +205,28 @@ public class Code01_LinkedListMid {
 		test.next.next.next.next.next.next = new Node(6);
 		test.next.next.next.next.next.next.next = new Node(7);
 		test.next.next.next.next.next.next.next.next = new Node(8);
+		test.next.next.next.next.next.next.next.next.next = new Node(9);
+		test.next.next.next.next.next.next.next.next.next.next = new Node(10);
+//		test.next.next.next.next.next.next.next.next.next.next.next = new Node(11);
 
 		Node ans1 = null;
 		Node ans2 = null;
 
 		ans1 = midOrUpMidNode(test);
-		ans2 = right1(test);
+//		ans2 = right1(test);
+		ans2 = myMidAndMidUpper(test);
 		System.out.println(ans1 != null ? ans1.value : "无");
 		System.out.println(ans2 != null ? ans2.value : "无");
 
 		ans1 = midOrDownMidNode(test);
-		ans2 = right2(test);
+//		ans2 = right2(test);
+		ans2 = myMidAndMidDown(test);
 		System.out.println(ans1 != null ? ans1.value : "无");
 		System.out.println(ans2 != null ? ans2.value : "无");
 
 		ans1 = midOrUpMidPreNode(test);
-		ans2 = right3(test);
+//		ans2 = right3(test);
+		ans2 = myMidUpperAndMidUpperUpper(test);
 		System.out.println(ans1 != null ? ans1.value : "无");
 		System.out.println(ans2 != null ? ans2.value : "无");
 
