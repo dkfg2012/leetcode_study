@@ -109,11 +109,119 @@ public class Code02_IsPalindromeList {
 		System.out.println();
 	}
 
+
+
+	//my code
+	public static boolean myIsPalindrome(Node head){
+		if(head == null){
+			return true;
+		}else if(head.next == null){
+			return true;
+		}else if(head.next.next == null){
+			return head.value == head.next.value;
+		}else{
+			Node slowP = head;
+			Node fastP = head;
+			while(fastP.next != null && fastP.next.next != null){
+				slowP = slowP.next;
+				fastP = fastP.next.next;
+			}
+			Stack<Node> s = new Stack<>();
+			if(fastP.next == null){
+				//double
+				slowP = slowP.next;
+				while(slowP.next != null){
+					s.add(slowP);
+					slowP = slowP.next;
+				}
+				s.add(slowP);
+				while(!s.isEmpty()){
+					if(head.value != s.pop().value){
+						return false;
+					}
+					head = head.next;
+				}
+				return true;
+			}else{
+				//single
+				while(slowP.next != null){
+					s.add(slowP);
+					slowP = slowP.next;
+				}
+				s.add(slowP);
+				while(!s.isEmpty()){
+					if(head.value != s.pop().value){
+						return false;
+					}
+					head = head.next;
+				}
+				return true;
+			}
+		}
+	}
+
+	public static boolean O1IsPalindrome(Node head){
+		if(head == null){
+			return true;
+		}else if(head.next == null){
+			return true;
+		}else if(head.next.next == null){
+			return head.value == head.next.value;
+		}
+		Node slowP = head;
+		Node fastP = head;
+		while(fastP.next != null && fastP.next.next != null){
+			slowP = slowP.next;
+			fastP = fastP.next.next;
+		}
+		Node Righthead = slowP.next;
+		// reverse left part of list
+		slowP.next = null;
+		Node cur = head;
+		Node next = null;
+		Node pre = null;
+
+		while(cur != slowP){
+			next = cur.next;
+			cur.next = pre;
+			pre = cur;
+			cur = next;
+		}
+		if(fastP.next == null){
+			slowP = slowP.next;
+			while(Righthead != null && slowP != null){
+				System.out.println(Righthead.value);
+				System.out.println(slowP.value);
+				System.out.println("");
+				if(Righthead.value != slowP.value){
+					return false;
+				}else{
+					Righthead = Righthead.next;
+					slowP = slowP.next;
+				}
+			}
+			return true;
+		}else{
+			while(Righthead != null && slowP != null){
+				if(Righthead.value != slowP.value){
+					return false;
+				}else{
+					Righthead = Righthead.next;
+					slowP = slowP.next;
+				}
+			}
+			return true;
+		}
+
+	}
+
 	public static void main(String[] args) {
 
 		Node head = null;
 		printLinkedList(head);
-		System.out.print(isPalindrome1(head) + " | ");
+//		System.out.print(isPalindrome1(head) + " | ");
+		System.out.print(myIsPalindrome(head) + " | ");
+//		System.out.print(O1IsPalindrome(head) + " | ");
 		System.out.print(isPalindrome2(head) + " | ");
 		System.out.println(isPalindrome3(head) + " | ");
 		printLinkedList(head);
@@ -121,7 +229,9 @@ public class Code02_IsPalindromeList {
 
 		head = new Node(1);
 		printLinkedList(head);
-		System.out.print(isPalindrome1(head) + " | ");
+//		System.out.print(isPalindrome1(head) + " | ");
+		System.out.print(myIsPalindrome(head) + " | ");
+//		System.out.print(O1IsPalindrome(head) + " | ");
 		System.out.print(isPalindrome2(head) + " | ");
 		System.out.println(isPalindrome3(head) + " | ");
 		printLinkedList(head);
@@ -130,7 +240,9 @@ public class Code02_IsPalindromeList {
 		head = new Node(1);
 		head.next = new Node(2);
 		printLinkedList(head);
-		System.out.print(isPalindrome1(head) + " | ");
+//		System.out.print(isPalindrome1(head) + " | ");
+		System.out.print(myIsPalindrome(head) + " | ");
+//		System.out.print(O1IsPalindrome(head) + " | ");
 		System.out.print(isPalindrome2(head) + " | ");
 		System.out.println(isPalindrome3(head) + " | ");
 		printLinkedList(head);
@@ -139,7 +251,9 @@ public class Code02_IsPalindromeList {
 		head = new Node(1);
 		head.next = new Node(1);
 		printLinkedList(head);
-		System.out.print(isPalindrome1(head) + " | ");
+//		System.out.print(isPalindrome1(head) + " | ");
+		System.out.print(myIsPalindrome(head) + " | ");
+//		System.out.print(O1IsPalindrome(head) + " | ");
 		System.out.print(isPalindrome2(head) + " | ");
 		System.out.println(isPalindrome3(head) + " | ");
 		printLinkedList(head);
@@ -149,7 +263,9 @@ public class Code02_IsPalindromeList {
 		head.next = new Node(2);
 		head.next.next = new Node(3);
 		printLinkedList(head);
-		System.out.print(isPalindrome1(head) + " | ");
+//		System.out.print(isPalindrome1(head) + " | ");
+		System.out.print(myIsPalindrome(head) + " | ");
+//		System.out.print(O1IsPalindrome(head) + " | ");
 		System.out.print(isPalindrome2(head) + " | ");
 		System.out.println(isPalindrome3(head) + " | ");
 		printLinkedList(head);
@@ -159,7 +275,9 @@ public class Code02_IsPalindromeList {
 		head.next = new Node(2);
 		head.next.next = new Node(1);
 		printLinkedList(head);
-		System.out.print(isPalindrome1(head) + " | ");
+//		System.out.print(isPalindrome1(head) + " | ");
+		System.out.print(myIsPalindrome(head) + " | ");
+//		System.out.print(O1IsPalindrome(head) + " | ");
 		System.out.print(isPalindrome2(head) + " | ");
 		System.out.println(isPalindrome3(head) + " | ");
 		printLinkedList(head);
@@ -170,7 +288,9 @@ public class Code02_IsPalindromeList {
 		head.next.next = new Node(3);
 		head.next.next.next = new Node(1);
 		printLinkedList(head);
-		System.out.print(isPalindrome1(head) + " | ");
+//		System.out.print(isPalindrome1(head) + " | ");
+		System.out.print(myIsPalindrome(head) + " | ");
+//		System.out.print(O1IsPalindrome(head) + " | ");
 		System.out.print(isPalindrome2(head) + " | ");
 		System.out.println(isPalindrome3(head) + " | ");
 		printLinkedList(head);
@@ -181,7 +301,9 @@ public class Code02_IsPalindromeList {
 		head.next.next = new Node(2);
 		head.next.next.next = new Node(1);
 		printLinkedList(head);
-		System.out.print(isPalindrome1(head) + " | ");
+//		System.out.print(isPalindrome1(head) + " | ");
+		System.out.print(myIsPalindrome(head) + " | ");
+//		System.out.print(O1IsPalindrome(head) + " | ");
 		System.out.print(isPalindrome2(head) + " | ");
 		System.out.println(isPalindrome3(head) + " | ");
 		printLinkedList(head);
@@ -193,7 +315,9 @@ public class Code02_IsPalindromeList {
 		head.next.next.next = new Node(2);
 		head.next.next.next.next = new Node(1);
 		printLinkedList(head);
-		System.out.print(isPalindrome1(head) + " | ");
+//		System.out.print(isPalindrome1(head) + " | ");
+		System.out.print(myIsPalindrome(head) + " | ");
+//		System.out.print(O1IsPalindrome(head) + " | ");
 		System.out.print(isPalindrome2(head) + " | ");
 		System.out.println(isPalindrome3(head) + " | ");
 		printLinkedList(head);
