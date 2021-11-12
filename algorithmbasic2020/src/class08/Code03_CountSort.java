@@ -25,6 +25,32 @@ public class Code03_CountSort {
 		}
 	}
 
+	//my code
+	public static void myCountSort(int[] arr){
+		if(arr == null || arr.length < 2){
+			return;
+		}
+		int bucketSize = Integer.MIN_VALUE;
+		int[] copy = new int[arr.length];
+		for(int i = 0; i < arr.length; i++){
+			bucketSize = Math.max(bucketSize, arr[i]);
+			copy[i] = arr[i];
+		}
+		int[] bucket = new int[bucketSize + 1];
+		for(int i = 0; i < arr.length; i++){
+			bucket[arr[i]]++;
+		}
+		for(int i = 1; i < bucket.length; i++){
+			bucket[i] = bucket[i] + bucket[i-1];
+		}
+		for(int i = 0; i < copy.length; i++){
+			int index = copy[i];
+			int newIndex = bucket[index] - 1;
+			arr[newIndex] = copy[i];
+			bucket[index]--;
+		}
+	}
+
 	// for test
 	public static void comparator(int[] arr) {
 		Arrays.sort(arr);
@@ -91,7 +117,8 @@ public class Code03_CountSort {
 			int[] arr1 = generateRandomArray(maxSize, maxValue);
 			int[] arr2 = copyArray(arr1);
 			countSort(arr1);
-			comparator(arr2);
+//			comparator(arr2);
+			myCountSort(arr2);
 			if (!isEqual(arr1, arr2)) {
 				succeed = false;
 				printArray(arr1);
