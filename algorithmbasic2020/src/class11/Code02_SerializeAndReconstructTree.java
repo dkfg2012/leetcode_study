@@ -182,28 +182,59 @@ public class Code02_SerializeAndReconstructTree {
 
 
 	//my code
-	public static Queue<String> myInOrderSerial(Node head){
+	//inorder cannot reconstruct a tree
+	public static Queue<String> myPreOrderSerial(Node head){
 		Queue<String> r = new LinkedList<>();
-		myInOrderProcess(head, r);
+		myPreOrderProcess(head, r);
 		return r;
 	}
 
-	public static void myInOrderProcess(Node head, Queue<String> q){
+	public static void myPreOrderProcess(Node head, Queue<String> q){
 		if(head == null){
 			q.add(null);
 		}
-		myInOrderProcess(head.left, q);
 		q.add(String.valueOf(head.value));
-		myInOrderProcess(head.right, q);
+		myPreOrderProcess(head.left, q);
+		myPreOrderProcess(head.right, q);
 	}
 
-	public static Node myInOrderDeserialize(Queue<String> q){
-		while(!q.isEmpty()){
-			Node cur = q.poll();
+	public static Node myPreOrderDeserialize(Queue<String> q){
+		String value = q.poll();
+		if(value == null){
+			return null;
+		}
+		Node cur = new Node(Integer.valueOf(value));
+		cur.left = myPreOrderDeserialize(q);
+		cur.right = myPreOrderDeserialize(q);
+		return cur;
+	}
+
+	public static Queue<String> myBFSSerial(Node head){
+		Queue<String> r = new LinkedList<>();
+
+	}
+
+	public static void myBFSProcess(Node head, Queue<String> q){
+		if(head == null){
+			return;
+		}
+		Queue<Node> qq = new LinkedList<>();
+		q.add(String.valueOf(head.value));
+		qq.add(head);
+		Node cur = head;
+		while(cur != null){
+			cur = qq.peek();
+			q.add("l");
+			if(cur.left != null){
+				q.add(String.valueOf(cur.value));
+			}
+			if(cur.right != null){
+				q.add(String.valueOf(cur.value));
+			}
 		}
 	}
 
-
+//	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
 
 	// for test
 
