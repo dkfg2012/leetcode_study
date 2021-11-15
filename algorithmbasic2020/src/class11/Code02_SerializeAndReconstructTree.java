@@ -304,7 +304,6 @@ public class Code02_SerializeAndReconstructTree {
 		return head;
 	}
 
-//	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
 
 	// for test
 
