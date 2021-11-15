@@ -178,6 +178,40 @@ public class Code02_SerializeAndReconstructTree {
 		return new Node(Integer.valueOf(val));
 	}
 
+
+
+
+	//my code
+	public static Queue<String> myInOrderSerial(Node head){
+		Queue<String> r = new LinkedList<>();
+		myInOrderProcess(head, r);
+		return r;
+	}
+
+	public static void myInOrderProcess(Node head, Queue<String> q){
+		if(head == null){
+			q.add(null);
+		}
+		myInOrderProcess(head.left, q);
+		q.add(String.valueOf(head.value));
+		myInOrderProcess(head.right, q);
+	}
+
+	public static Node myInOrderDeserialize(Queue<String> q){
+		while(!q.isEmpty()){
+			Node cur = q.poll();
+		}
+	}
+
+
+
+	// for test
+
+
+
+
+
+
 	// for test
 	public static Node generateRandomBST(int maxLevel, int maxValue) {
 		return generate(1, maxLevel, maxValue);
@@ -211,7 +245,6 @@ public class Code02_SerializeAndReconstructTree {
 		return isSameValueStructure(head1.left, head2.left) && isSameValueStructure(head1.right, head2.right);
 	}
 
-	// for test
 	public static void printTree(Node head) {
 		System.out.println("Binary Tree:");
 		printInOrder(head, 0, "H", 17);

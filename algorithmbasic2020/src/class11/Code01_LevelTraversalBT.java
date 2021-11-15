@@ -33,6 +33,26 @@ public class Code01_LevelTraversalBT {
 		}
 	}
 
+	//my code
+	public static void myLevel(Node head){
+		if(head == null){
+			return;
+		}
+		Queue<Node> pq = new LinkedList<>();
+		pq.offer(head);
+		while(!pq.isEmpty()){
+			Node t = pq.poll();
+			System.out.println(t.value);
+			if(t.left != null){
+				pq.offer(t.left);
+			}
+			if(t.right != null){
+				pq.offer(t.right);
+			}
+		}
+	}
+	//
+
 	public static void main(String[] args) {
 		Node head = new Node(1);
 		head.left = new Node(2);
@@ -44,6 +64,7 @@ public class Code01_LevelTraversalBT {
 
 		level(head);
 		System.out.println("========");
+		myLevel(head);
 	}
 
 }
