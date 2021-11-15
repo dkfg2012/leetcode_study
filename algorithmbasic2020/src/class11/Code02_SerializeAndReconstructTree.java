@@ -211,27 +211,97 @@ public class Code02_SerializeAndReconstructTree {
 
 	public static Queue<String> myBFSSerial(Node head){
 		Queue<String> r = new LinkedList<>();
-
+		myBFSProcess(head, r);
+		return r;
 	}
 
 	public static void myBFSProcess(Node head, Queue<String> q){
 		if(head == null){
 			return;
 		}
-		Queue<Node> qq = new LinkedList<>();
+		Queue<Node> support = new LinkedList<>();
 		q.add(String.valueOf(head.value));
-		qq.add(head);
-		Node cur = head;
-		while(cur != null){
-			cur = qq.peek();
-			q.add("l");
+		support.add(head);
+		Node cur;
+		while(!support.isEmpty()){
+			cur = support.poll();
 			if(cur.left != null){
-				q.add(String.valueOf(cur.value));
+				q.add(String.valueOf(cur.left.value));
+				support.add(cur.left);
+			}else{
+				q.add(null);
 			}
 			if(cur.right != null){
-				q.add(String.valueOf(cur.value));
+				q.add(String.valueOf(cur.right.value));
+				support.add(cur.right);
+			}else{
+				q.add(null);
 			}
 		}
+	}
+
+	public static Node myBFSDeserial(Queue<String> q){
+		if(q == null || q.size() == 0){
+			return null;
+		}
+		Node head = new Node(Integer.valueOf(q.poll()));
+		Queue<Node> queue = new LinkedList<>();
+		queue.add(head);
+		Node cur;
+		while(!queue.isEmpty()){
+			cur = queue.poll();
+			String tl = q.poll();
+			Node lc = tl == null ? null : new Node(Integer.valueOf(tl));
+			String tr = q.poll();
+			Node rc = tr == null ? null : new Node(Integer.valueOf(tr));
+			cur.left = lc;
+			cur.right = rc;
+			if(lc != null){
+				queue.add(lc);
+			}
+			if(rc != null){
+				queue.add(rc);
+			}
+		}
+		return head;
+	}
+
+	public static Queue<String> myPostOrder(Node head){
+		Queue<String> r = new LinkedList<>();
+		myPostHelp(head, r);
+		return r;
+	}
+
+	public static void myPostHelp(Node head, Queue<String> q){
+		if(head == null){
+			q.add(null);
+			return;
+		}
+		myPostHelp(head.left, q);
+		myPostHelp(head.right, q);
+		q.add(String.valueOf(head.value));
+	}
+
+	public static Node myPostDeserial(Queue<String> q){
+		if(q == null || q.size() == 0){
+			return null;
+		}
+		Stack<String> st = new Stack<>();
+		while(!q.isEmpty()){
+			st.add(q.poll());
+		}
+		return myPostDHelp(st);
+	}
+
+	public static Node myPostDHelp(Stack<String> st){
+		String s = st.pop();
+		if(s == null){
+			return null;
+		}
+		Node head = new Node(Integer.valueOf(s));
+		head.right = myPostDHelp(st);
+		head.left = myPostDHelp(st);
+		return head;
 	}
 
 //	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
@@ -313,10 +383,14 @@ public class Code02_SerializeAndReconstructTree {
 		for (int i = 0; i < testTimes; i++) {
 			Node head = generateRandomBST(maxLevel, maxValue);
 			Queue<String> pre = preSerial(head);
-			Queue<String> pos = posSerial(head);
+//			Queue<String> pos = posSerial(head);
+//			Queue<String> pos = myBFSSerial(head);
+			Queue<String> pos = myPostOrder(head);
 			Queue<String> level = levelSerial(head);
 			Node preBuild = buildByPreQueue(pre);
-			Node posBuild = buildByPosQueue(pos);
+//			Node posBuild = buildByPosQueue(pos);
+//			Node posBuild = myBFSDeserial(pos);
+			Node posBuild = myPostDeserial(pos);
 			Node levelBuild = buildByLevelQueue(level);
 			if (!isSameValueStructure(preBuild, posBuild) || !isSameValueStructure(posBuild, levelBuild)) {
 				System.out.println("Oops!");
