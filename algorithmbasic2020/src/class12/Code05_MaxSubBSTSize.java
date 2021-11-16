@@ -239,31 +239,31 @@ public class Code05_MaxSubBSTSize {
 		myInfo rightI = myProcess(head.right);
 		boolean isBST = true;
 		int mySize = 1;
-		int maxSize = 0;
+		int maxSize = 1;
 		int max = head.value;
 		int min = head.value;
 		if(leftI != null){
 			if(leftI.isBST && leftI.max < head.value){
 				mySize = leftI.size + mySize;
 				maxSize = Math.max(mySize, maxSize);
+				min = Math.min(min, leftI.min);
+				max = Math.max(max, leftI.max);
 			}else{
 				isBST = false;
 				maxSize = Math.max(leftI.size, maxSize);
 			}
-			min = Math.min(min, leftI.min);
-			max = Math.max(max, leftI.max);
 		}
 
 		if(rightI != null){
 			if(rightI.isBST && rightI.min > head.value){
 				mySize = rightI.size + mySize;
 				maxSize = Math.max(mySize, maxSize);
+				min = Math.min(min, rightI.min);
+				max = Math.max(max, rightI.max);
 			}else{
 				isBST = false;
 				maxSize = Math.max(rightI.size, maxSize);
 			}
-			min = Math.min(min, rightI.min);
-			max = Math.max(max, rightI.max);
 		}
 		return new myInfo(isBST, min, max, maxSize);
 
@@ -294,7 +294,11 @@ public class Code05_MaxSubBSTSize {
 		for (int i = 0; i < testTimes; i++) {
 			Node head = generateRandomBST(maxLevel, maxValue);
 //			if (maxSubBSTSize1(head) != maxSubBSTSize2(head)) {
-			if (mygetBSTSize(head) != maxSubBSTSize2(head)) {
+			int my = mygetBSTSize(head);
+			int ans = maxSubBSTSize2(head);
+			if (my != ans) {
+				System.out.println(my);
+				System.out.println(ans);
 				System.out.println("Oops!");
 				break;
 			}
