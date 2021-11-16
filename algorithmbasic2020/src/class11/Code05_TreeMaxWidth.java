@@ -81,6 +81,41 @@ public class Code05_TreeMaxWidth {
 		return max;
 	}
 
+
+	//my code
+	public static int myMaxWidth(Node head){
+		if(head == null){
+			return 0;
+		}
+		Queue<Node> queue = new LinkedList<>();
+		int max = Integer.MIN_VALUE;
+		int size = 0;
+		queue.add(head);
+		Node rightEnd = head;
+		Node cur = null;
+		Node nextLevelEnd = null;
+		while(!queue.isEmpty()){
+			cur = queue.poll();
+			if(cur.left != null){
+				queue.add(cur.left);
+				nextLevelEnd = cur.left;
+			}
+			if(cur.right != null){
+				queue.add(cur.right);
+				nextLevelEnd = cur.right;
+			}
+			size++;
+			if(cur == rightEnd){
+				max = Math.max(max, size);
+				size = 0;
+				rightEnd = nextLevelEnd;
+			}
+		}
+		return max;
+	}
+
+
+
 	// for test
 	public static Node generateRandomBST(int maxLevel, int maxValue) {
 		return generate(1, maxLevel, maxValue);
@@ -100,10 +135,11 @@ public class Code05_TreeMaxWidth {
 	public static void main(String[] args) {
 		int maxLevel = 10;
 		int maxValue = 100;
-		int testTimes = 1000000;
+		int testTimes = 100;
 		for (int i = 0; i < testTimes; i++) {
 			Node head = generateRandomBST(maxLevel, maxValue);
-			if (maxWidthUseMap(head) != maxWidthNoMap(head)) {
+//			if (maxWidthUseMap(head) != maxWidthNoMap(head)) {
+			if (maxWidthUseMap(head) != myMaxWidth(head)) {
 				System.out.println("Oops!");
 			}
 		}

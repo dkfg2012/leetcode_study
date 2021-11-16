@@ -81,6 +81,76 @@ public class Code03_EncodeNaryTreeToBinaryTree {
 			return children;
 		}
 
+
+
+
+
+
+
+		//my code
+		//to transform a n array tree, we let the leftmost node be the left child of head node
+		//and all other children be a linked list, be the right child of head node
+		//so all right child will be the same level node of their ancestor
+		public TreeNode myEncode(Node root){
+			if(root == null){
+				return null;
+			}
+			TreeNode head = new TreeNode(root.val);
+			head.left = encodeProcess(root.children);
+			return head;
+		}
+
+		public TreeNode encodeProcess(List<Node> children){
+			TreeNode head = null;
+			TreeNode cur = null;
+			for(Node child: children){
+				TreeNode t = new TreeNode(child.val);
+				if(head == null){
+					head = t;
+				}else{
+					cur.right = t;
+				}
+				cur = t; //handle its child first
+				cur.left = encodeProcess(child.children);
+			}
+			return head;
+		}
+
+
+		public Node myDecode(TreeNode root){
+			if(root == null){
+				return null;
+			}
+			Node head = new Node(root.val);
+			head.children = decodeProcess(root.left);
+			return head;
+		}
+
+		public List<Node> decodeProcess(TreeNode child){
+			List<Node> l = new ArrayList<>();
+//			Node leftMost = new Node(child.val);
+//			leftMost.children = decodeProcess(child.left);
+//			l.add(leftMost);
+//			TreeNode sameL = child.right;
+//			while(sameL != null){
+//				Node sameLevel = new Node(sameL.val);
+//				sameLevel.children = decodeProcess(sameL.left);
+//				l.add(sameLevel);
+//				sameL = sameL.right;
+//			}
+			while(child != null){
+				Node cur = new Node(child.val);
+				cur.children = decodeProcess(child.right);
+				l.add(cur);
+				child = child.right;
+			}
+			return l;
+		}
+
+
+
+		//
+
 	}
 
 }

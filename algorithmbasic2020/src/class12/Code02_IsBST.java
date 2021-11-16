@@ -93,6 +93,64 @@ public class Code02_IsBST {
 		return new Info(isBST, max, min);
 	}
 
+
+
+	//my code
+	public static boolean myisBST(Node head){
+		if(head == null){
+			return true;
+		}
+		return myProcess(head).isBST;
+	}
+
+	public static class myInfo{
+		private boolean isBST;
+		private int min;
+		private int max;
+		public myInfo(boolean isBST, int min, int max){
+			this.isBST = isBST;
+			this.min = min;
+			this.max = max;
+		}
+	}
+
+	public static myInfo myProcess(Node head){
+		myInfo leftInfo = null;
+		myInfo rightInfo = null;
+		if(head.left != null){
+			leftInfo = myProcess(head.left);
+		}
+		if(head.right != null){
+			rightInfo = myProcess(head.right);
+		}
+		boolean isBST = true;
+
+
+		int min = head.value;
+		int max = head.value;
+
+		if(leftInfo != null){
+			if(leftInfo.max >= head.value || leftInfo.isBST == false){
+				isBST = false;
+			}
+			min = Math.min(min, leftInfo.min);
+			max = Math.max(max, leftInfo.max);
+		}
+		if(rightInfo != null){
+			if(rightInfo.min <= head.value || rightInfo.isBST == false) {
+				isBST = false;
+			}
+			min = Math.min(min, rightInfo.min);
+			max = Math.max(max, rightInfo.max);
+		}
+		return new myInfo(isBST, min, max);
+	}
+
+
+
+
+
+
 	// for test
 	public static Node generateRandomBST(int maxLevel, int maxValue) {
 		return generate(1, maxLevel, maxValue);
@@ -115,7 +173,8 @@ public class Code02_IsBST {
 		int testTimes = 1000000;
 		for (int i = 0; i < testTimes; i++) {
 			Node head = generateRandomBST(maxLevel, maxValue);
-			if (isBST1(head) != isBST2(head)) {
+//			if (isBST1(head) != isBST2(head)) {
+			if (myisBST(head) != isBST2(head)) {
 				System.out.println("Oops!");
 			}
 		}

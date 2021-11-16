@@ -117,6 +117,59 @@ public class Code01_IsCBT {
 		return new Info(isFull, isCBT, height);
 	}
 
+
+
+	//my code
+	public static class myInfo{
+		private boolean isCBT;
+		private boolean isFull;
+		private int height;
+		public myInfo(boolean isCBT, boolean isFull, int height){
+			this.isCBT = isCBT;
+			this.isFull = isFull;
+			this.height = height;
+		}
+	}
+
+	public static boolean isCompleteBST(Node head){
+		if(head == null){
+			return true;
+		}
+		myInfo r = myprocess(head);
+		return r.isCBT;
+	}
+
+	public static myInfo myprocess(Node node){
+		if(node == null){
+			return new myInfo(true, true, 0);
+		}
+
+		boolean cbt = false;
+		boolean full = false;
+		myInfo leftTInfo = myprocess(node.left);
+		myInfo righTInfo = myprocess(node.right);
+
+		if(leftTInfo.isFull && righTInfo.isFull && leftTInfo.height == righTInfo.height){
+			full = true;
+			cbt = true;
+		}
+		if(leftTInfo.isCBT && righTInfo.isFull && leftTInfo.height == righTInfo.height + 1){
+			cbt = true;
+		}
+		if(leftTInfo.isFull && righTInfo.isFull && leftTInfo.height == righTInfo.height + 1){
+			cbt = true;
+		}
+		if(leftTInfo.isFull && righTInfo.isCBT && leftTInfo.height == righTInfo.height){
+			cbt = true;
+		}
+
+		int levelHeight = Math.max(leftTInfo.height, righTInfo.height) + 1;
+ 		return new myInfo(cbt, full, levelHeight);
+	}
+
+
+
+
 	// for test
 	public static Node generateRandomBST(int maxLevel, int maxValue) {
 		return generate(1, maxLevel, maxValue);
@@ -139,7 +192,8 @@ public class Code01_IsCBT {
 		int testTimes = 1000000;
 		for (int i = 0; i < testTimes; i++) {
 			Node head = generateRandomBST(maxLevel, maxValue);
-			if (isCBT1(head) != isCBT2(head)) {
+//			if (isCBT1(head) != isCBT2(head)) {
+			if (isCompleteBST(head) != isCBT2(head)) {
 				System.out.println("Oops!");
 			}
 		}

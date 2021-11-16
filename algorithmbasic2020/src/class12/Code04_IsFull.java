@@ -64,6 +64,56 @@ public class Code04_IsFull {
 		return new Info(height, nodes);
 	}
 
+
+
+	//my code
+	public static boolean myIsFull(Node head){
+		if(head == null){
+			return true;
+		}
+		return myProcess(head).isFull;
+	}
+
+	public static class myInfo{
+		private boolean isFull;
+		private int height;
+		public myInfo(boolean isFull, int height){
+			this.isFull = isFull;
+			this.height = height;
+		}
+	}
+
+	public static myInfo myProcess(Node head){
+		if(head == null){
+			return null;
+		}
+		myInfo leftInfo = myProcess(head.left);
+		myInfo rightInfo = myProcess(head.right);
+		boolean isFull = true;
+		int lh = 0;
+		int rh = 0;
+		if(leftInfo != null){
+			if(leftInfo.isFull == false){
+				isFull = false;
+			}
+			lh = leftInfo.height;
+		}
+		if(rightInfo != null){
+			if(rightInfo.isFull == false){
+				isFull = false;
+			}
+			rh = rightInfo.height;
+		}
+		if(lh != rh){
+			isFull = false;
+		}
+		int height = Math.max(lh, rh) + 1;
+		return new myInfo(isFull, height);
+	}
+
+
+
+
 	// for test
 	public static Node generateRandomBST(int maxLevel, int maxValue) {
 		return generate(1, maxLevel, maxValue);
@@ -86,7 +136,8 @@ public class Code04_IsFull {
 		int testTimes = 1000000;
 		for (int i = 0; i < testTimes; i++) {
 			Node head = generateRandomBST(maxLevel, maxValue);
-			if (isFull1(head) != isFull2(head)) {
+//			if (isFull1(head) != isFull2(head)) {
+			if (myIsFull(head) != isFull2(head)) {
 				System.out.println("Oops!");
 			}
 		}

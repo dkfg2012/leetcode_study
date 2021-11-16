@@ -208,6 +208,69 @@ public class Code05_MaxSubBSTSize {
 		return new Info(Math.max(p1, Math.max(p2, p3)), allSize, max, min);
 	}
 
+
+
+	//my code
+	public static int mygetBSTSize(Node head){
+		if(head == null){
+			return 0;
+		}
+		return myProcess(head).size;
+	}
+
+	public static class myInfo{
+		private boolean isBST;
+		private int min;
+		private int max;
+		private int size;
+		public myInfo(boolean isBST, int min, int max, int size){
+			this.isBST = isBST;
+			this.min = min;
+			this.max = max;
+			this.size = size;
+		}
+	}
+
+	public static myInfo myProcess(Node head){
+		if(head == null){
+			return null;
+		}
+		myInfo leftI = myProcess(head.left);
+		myInfo rightI = myProcess(head.right);
+		boolean isBST = true;
+		int mySize = 1;
+		int maxSize = 0;
+		int max = head.value;
+		int min = head.value;
+		if(leftI != null){
+			if(leftI.isBST && leftI.max < head.value){
+				mySize = leftI.size + mySize;
+				maxSize = Math.max(mySize, maxSize);
+			}else{
+				isBST = false;
+				maxSize = Math.max(leftI.size, maxSize);
+			}
+			min = Math.min(min, leftI.min);
+			max = Math.max(max, leftI.max);
+		}
+
+		if(rightI != null){
+			if(rightI.isBST && rightI.min > head.value){
+				mySize = rightI.size + mySize;
+				maxSize = Math.max(mySize, maxSize);
+			}else{
+				isBST = false;
+				maxSize = Math.max(rightI.size, maxSize);
+			}
+			min = Math.min(min, rightI.min);
+			max = Math.max(max, rightI.max);
+		}
+		return new myInfo(isBST, min, max, maxSize);
+
+	}
+
+
+
 	// for test
 	public static Node generateRandomBST(int maxLevel, int maxValue) {
 		return generate(1, maxLevel, maxValue);
@@ -230,9 +293,12 @@ public class Code05_MaxSubBSTSize {
 		int testTimes = 1000000;
 		for (int i = 0; i < testTimes; i++) {
 			Node head = generateRandomBST(maxLevel, maxValue);
-			if (maxSubBSTSize1(head) != maxSubBSTSize2(head)) {
+//			if (maxSubBSTSize1(head) != maxSubBSTSize2(head)) {
+			if (mygetBSTSize(head) != maxSubBSTSize2(head)) {
 				System.out.println("Oops!");
+				break;
 			}
+			System.out.println("pass");
 		}
 		System.out.println("finish!");
 	}

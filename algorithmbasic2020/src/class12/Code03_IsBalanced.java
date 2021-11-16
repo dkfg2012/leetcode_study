@@ -64,8 +64,55 @@ public class Code03_IsBalanced {
 		}
 		return new Info(isBalanced, height);
 	}
-	
-	
+
+
+
+
+
+	//my code
+	public static boolean isBalanced(Node head){
+		if(head == null){
+			return true;
+		}
+		return myProcess(head).isBalanced;
+	}
+
+
+	public static class myInfo{
+		boolean isBalanced;
+		int height;
+		public myInfo(boolean isBalanced, int height){
+			this.isBalanced = isBalanced;
+			this.height = height;
+		}
+	}
+
+	public static myInfo myProcess(Node head){
+		if(head == null){
+			return null;
+		}
+		myInfo leftTreeInfo = myProcess(head.left);
+		myInfo rightTreeInfo = myProcess(head.right);
+		int lheight = leftTreeInfo == null ? 0 : leftTreeInfo.height;
+		int rheight = rightTreeInfo == null ? 0 : rightTreeInfo.height;
+		int height = Math.max(lheight, rheight);
+
+		boolean isBalanced = true;
+		if(leftTreeInfo != null){
+			if(leftTreeInfo.isBalanced == false){
+				isBalanced = false;
+			}
+		}
+		if(rightTreeInfo != null){
+			if(rightTreeInfo.isBalanced == false){
+				isBalanced = false;
+			}
+		}
+		if(Math.abs(lheight - rheight) > 1){
+			isBalanced = false;
+		}
+		return new myInfo(isBalanced, height + 1);
+	}
 	
 	
 	
@@ -92,7 +139,8 @@ public class Code03_IsBalanced {
 		int testTimes = 1000000;
 		for (int i = 0; i < testTimes; i++) {
 			Node head = generateRandomBST(maxLevel, maxValue);
-			if (isBalanced1(head) != isBalanced2(head)) {
+//			if (isBalanced1(head) != isBalanced2(head)) {
+			if (isBalanced(head) != isBalanced2(head)) {
 				System.out.println("Oops!");
 			}
 		}
