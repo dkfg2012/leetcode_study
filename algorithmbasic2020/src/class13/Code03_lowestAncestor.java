@@ -86,6 +86,61 @@ public class Code03_lowestAncestor {
 		return new Info(findA, findB, ans);
 	}
 
+
+	//my code
+	public static Node myLowesetAncestor(Node head, Node o1, Node o2){
+		if(o1 == o2){
+			return o1;
+		}
+		return myProcess(head, o1, o2).ancestor;
+	}
+
+	public static class myInfo{
+		private boolean foundO1;
+		private boolean foundO2;
+		private Node ancestor;
+		public myInfo(boolean foundO1, boolean foundO2, Node ancestor){
+			this.foundO1 = foundO1;
+			this.foundO2 = foundO2;
+			this.ancestor = ancestor;
+		}
+	}
+
+	public static myInfo myProcess(Node head, Node o1, Node o2){
+		if(head == null){
+			return new myInfo(false, false, null);
+		}
+
+		myInfo leftI = myProcess(head.left, o1, o2);
+		myInfo rightI = myProcess(head.right, o1, o2);
+		boolean isO1 = false;
+		boolean isO2 = false;
+
+		if(leftI.foundO1 || rightI.foundO1){
+			isO1 = true;
+		}
+		if(leftI.foundO2 || rightI.foundO2){
+			isO2 = true;
+		}
+
+		if(head == o1){
+			isO1 = true;
+		}
+		if(head == o2){
+			isO2 = true;
+		}
+		if(isO1 && isO2){
+			if(leftI.ancestor == null && rightI.ancestor == null){
+				return new myInfo(true, true, head);
+			}else{
+				return new myInfo(true, true, leftI.ancestor == null ? rightI.ancestor : leftI.ancestor);
+			}
+		}
+		return new myInfo(isO1, isO2, null);
+
+	}
+
+
 	// for test
 	public static Node generateRandomBST(int maxLevel, int maxValue) {
 		return generate(1, maxLevel, maxValue);
@@ -131,7 +186,8 @@ public class Code03_lowestAncestor {
 			Node head = generateRandomBST(maxLevel, maxValue);
 			Node o1 = pickRandomOne(head);
 			Node o2 = pickRandomOne(head);
-			if (lowestAncestor1(head, o1, o2) != lowestAncestor2(head, o1, o2)) {
+//			if (lowestAncestor1(head, o1, o2) != lowestAncestor2(head, o1, o2)) {
+			if (myLowesetAncestor(head, o1, o2) != lowestAncestor2(head, o1, o2)) {
 				System.out.println("Oops!");
 			}
 		}

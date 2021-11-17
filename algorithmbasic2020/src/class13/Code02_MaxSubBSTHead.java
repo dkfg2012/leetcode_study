@@ -27,7 +27,6 @@ public class Code02_MaxSubBSTHead {
 		}
 		return arr.size();
 	}
-
 	public static void in(Node head, ArrayList<Node> arr) {
 		if (head == null) {
 			return;
@@ -104,6 +103,65 @@ public class Code02_MaxSubBSTHead {
 		return new Info(maxSubBSTHead, maxSubBSTSize, min, max);
 	}
 
+
+
+	//my code
+	public static Node myMaxSubBSTHead(Node head){
+		if(head == null){
+			return null;
+		}
+		return myProcess(head).maxNode;
+	}
+
+	public static class myInfo{
+		private int size;
+		private boolean isBST;
+		private Node maxNode;
+		private int max;
+		private int min;
+		public myInfo(int size, boolean isBST, Node maxNode, int max, int min){
+			this.size = size;
+			this.isBST = isBST;
+			this.maxNode = maxNode;
+			this.max = max;
+			this.min = min;
+		}
+	}
+
+	public static myInfo myProcess(Node head){
+		if(head == null){
+			return new myInfo(0,true, null, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		}
+		myInfo leftInfo = myProcess(head.left);
+		myInfo rightInfo = myProcess(head.right);
+
+		int max = head.value;
+		int min = head.value;
+
+		if(leftInfo.isBST && rightInfo.isBST){
+			if(leftInfo.max < head.value && rightInfo.min > head.value){
+				return new myInfo(leftInfo.size + rightInfo.size + 1, true, head, Math.max(Math.max(leftInfo.max, rightInfo.max), max), Math.min(Math.min(leftInfo.min, rightInfo.min),min));
+			}else{
+				//include self then not bst
+				if(leftInfo.size < rightInfo.size){
+					return new myInfo(rightInfo.size, false, rightInfo.maxNode, rightInfo.max, rightInfo.min);
+				}else{
+					return new myInfo(leftInfo.size, false, leftInfo.maxNode, leftInfo.max, leftInfo.min);
+				}
+			}
+		}
+		if(leftInfo.size < rightInfo.size){
+			return new myInfo(rightInfo.size, false, rightInfo.maxNode, rightInfo.max, rightInfo.min);
+		}else{
+			return new myInfo(leftInfo.size, false, leftInfo.maxNode, leftInfo.max, leftInfo.min);
+		}
+
+
+	}
+
+
+
+
 	// for test
 	public static Node generateRandomBST(int maxLevel, int maxValue) {
 		return generate(1, maxLevel, maxValue);
@@ -120,14 +178,46 @@ public class Code02_MaxSubBSTHead {
 		return head;
 	}
 
+	public static void printTree(Node head) {
+		System.out.println("Binary Tree:");
+		printInOrder(head, 0, "H", 17);
+		System.out.println();
+	}
+
+	public static void printInOrder(Node head, int height, String to, int len) {
+		if (head == null) {
+			return;
+		}
+		printInOrder(head.right, height + 1, "v", len);
+		String val = to + head.value + to;
+		int lenM = val.length();
+		int lenL = (len - lenM) / 2;
+		int lenR = len - lenM - lenL;
+		val = getSpace(lenL) + val + getSpace(lenR);
+		System.out.println(getSpace(height * len) + val);
+		printInOrder(head.left, height + 1, "^", len);
+	}
+
+	public static String getSpace(int num) {
+		String space = " ";
+		StringBuffer buf = new StringBuffer("");
+		for (int i = 0; i < num; i++) {
+			buf.append(space);
+		}
+		return buf.toString();
+	}
+
 	public static void main(String[] args) {
 		int maxLevel = 4;
 		int maxValue = 100;
 		int testTimes = 1000000;
 		for (int i = 0; i < testTimes; i++) {
 			Node head = generateRandomBST(maxLevel, maxValue);
-			if (maxSubBSTHead1(head) != maxSubBSTHead2(head)) {
+//			if (maxSubBSTHead1(head) != maxSubBSTHead2(head)) {
+			if (myMaxSubBSTHead(head) != maxSubBSTHead2(head)) {
 				System.out.println("Oops!");
+				printTree(head);
+				break;
 			}
 		}
 		System.out.println("finish!");

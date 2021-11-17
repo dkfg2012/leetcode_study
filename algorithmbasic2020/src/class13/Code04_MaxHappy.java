@@ -76,6 +76,43 @@ public class Code04_MaxHappy {
 		return new Info(no, yes);
 	}
 
+	//my code
+	public static int myMaxHappy(Employee boss){
+		if(boss == null){
+			return 0;
+		}
+		myInfo bossD = myProcess(boss);
+		return Math.max(bossD.inviteMeHappiness, bossD.DontInviteMeHappiness);
+	}
+
+	public static class myInfo{
+		private int inviteMeHappiness;
+		private int DontInviteMeHappiness;
+		public myInfo(int inviteMeHappiness, int DontInviteMeHappiness){
+			this.inviteMeHappiness = inviteMeHappiness;
+			this.DontInviteMeHappiness = DontInviteMeHappiness;
+		}
+	}
+
+	public static myInfo myProcess(Employee employee){
+		if(employee == null){
+			return new myInfo(0,0);
+		}
+		int meJoin = employee.happy;
+		int meDontJoin = 0;
+		for(Employee sub : employee.nexts){
+			myInfo t = myProcess(sub);
+			meJoin += t.DontInviteMeHappiness;
+			meDontJoin += Math.max(t.inviteMeHappiness, t.DontInviteMeHappiness);
+		}
+		return new myInfo(meJoin, meDontJoin);
+	}
+
+
+
+
+
+
 	// for test
 	public static Employee genarateBoss(int maxLevel, int maxNexts, int maxHappy) {
 		if (Math.random() < 0.02) {
@@ -106,9 +143,14 @@ public class Code04_MaxHappy {
 		int testTimes = 100000;
 		for (int i = 0; i < testTimes; i++) {
 			Employee boss = genarateBoss(maxLevel, maxNexts, maxHappy);
-			if (maxHappy1(boss) != maxHappy2(boss)) {
+//			if (maxHappy1(boss) != maxHappy2(boss)) {
+			if (myMaxHappy(boss) != maxHappy2(boss)) {
 				System.out.println("Oops!");
+				System.out.println(myMaxHappy(boss));
+				System.out.println(maxHappy2(boss));
+				break;
 			}
+			System.out.println("pass");
 		}
 		System.out.println("finish!");
 	}
