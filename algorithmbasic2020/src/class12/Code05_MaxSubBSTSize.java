@@ -1,5 +1,6 @@
 package class12;
 
+
 import java.util.ArrayList;
 
 public class Code05_MaxSubBSTSize {
@@ -237,35 +238,45 @@ public class Code05_MaxSubBSTSize {
 		}
 		myInfo leftI = myProcess(head.left);
 		myInfo rightI = myProcess(head.right);
-		boolean isBST = true;
-		int mySize = 1;
-		int maxSize = 1;
+		boolean isBST = false;
 		int max = head.value;
 		int min = head.value;
+		int LTreeSize = -1;
+		int RTreeSize = -1;
+		int mySize = 1;
 		if(leftI != null){
-			if(leftI.isBST && leftI.max < head.value){
-				mySize = leftI.size + mySize;
-				maxSize = Math.max(mySize, maxSize);
-				min = Math.min(min, leftI.min);
-				max = Math.max(max, leftI.max);
-			}else{
-				isBST = false;
-				maxSize = Math.max(leftI.size, maxSize);
-			}
+			min = Math.min(min, leftI.min);
+			max = Math.max(max, leftI.max);
+			LTreeSize = leftI.size;
 		}
 
 		if(rightI != null){
-			if(rightI.isBST && rightI.min > head.value){
-				mySize = rightI.size + mySize;
-				maxSize = Math.max(mySize, maxSize);
-				min = Math.min(min, rightI.min);
-				max = Math.max(max, rightI.max);
-			}else{
-				isBST = false;
-				maxSize = Math.max(rightI.size, maxSize);
-			}
+			min = Math.min(min, rightI.min);
+			max = Math.max(max, rightI.max);
+			RTreeSize = rightI.size;
 		}
-		return new myInfo(isBST, min, max, maxSize);
+
+		if(leftI != null && rightI != null){
+			if(leftI.isBST && rightI.isBST && leftI.max < head.value && rightI.min > head.value){
+				isBST = true;
+				mySize = 1 + LTreeSize + RTreeSize;
+			}
+		}else if(leftI != null && rightI == null){
+			if(leftI.isBST && leftI.max < head.value){
+				isBST = true;
+				mySize = 1 + LTreeSize;
+			}
+		}else if(rightI != null && leftI == null){
+			if(rightI.isBST && rightI.min > head.value){
+				isBST = true;
+				mySize = 1 + RTreeSize;
+			}
+		}else{
+			isBST = true;
+			mySize = 1;
+		}
+		mySize = Math.max(Math.max(mySize, LTreeSize), RTreeSize);
+		return new myInfo(isBST, min, max, mySize);
 
 	}
 
@@ -287,6 +298,35 @@ public class Code05_MaxSubBSTSize {
 		return head;
 	}
 
+	public static void printTree(Node head) {
+		System.out.println("Binary Tree:");
+		printInOrder(head, 0, "H", 17);
+		System.out.println();
+	}
+
+	public static void printInOrder(Node head, int height, String to, int len) {
+		if (head == null) {
+			return;
+		}
+		printInOrder(head.right, height + 1, "v", len);
+		String val = to + head.value + to;
+		int lenM = val.length();
+		int lenL = (len - lenM) / 2;
+		int lenR = len - lenM - lenL;
+		val = getSpace(lenL) + val + getSpace(lenR);
+		System.out.println(getSpace(height * len) + val);
+		printInOrder(head.left, height + 1, "^", len);
+	}
+
+	public static String getSpace(int num) {
+		String space = " ";
+		StringBuffer buf = new StringBuffer("");
+		for (int i = 0; i < num; i++) {
+			buf.append(space);
+		}
+		return buf.toString();
+	}
+
 	public static void main(String[] args) {
 		int maxLevel = 4;
 		int maxValue = 100;
@@ -297,12 +337,12 @@ public class Code05_MaxSubBSTSize {
 			int my = mygetBSTSize(head);
 			int ans = maxSubBSTSize2(head);
 			if (my != ans) {
+				printTree(head);
 				System.out.println(my);
 				System.out.println(ans);
 				System.out.println("Oops!");
 				break;
 			}
-			System.out.println("pass");
 		}
 		System.out.println("finish!");
 	}
