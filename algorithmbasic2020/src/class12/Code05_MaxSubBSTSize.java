@@ -55,15 +55,15 @@ public class Code05_MaxSubBSTSize {
 //		}
 //		return process(head).maxSubBSTSize;
 //	}
-//	
-//	
-//	
-//	
-//	
-//	
-//	
-//	
-//	
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //	// 任何子树
 //	public static class Info {
 //		public boolean isAllBST;
@@ -78,22 +78,22 @@ public class Code05_MaxSubBSTSize {
 //			max = ma;
 //		}
 //	}
-//	
-//	
-//	
-//	
+//
+//
+//
+//
 //	public static Info process(Node X) {
 //		if(X == null) {
 //			return null;
 //		}
 //		Info leftInfo = process(X.left);
 //		Info rightInfo = process(X.right);
-//		
-//		
-//		
+//
+//
+//
 //		int min = X.value;
 //		int max = X.value;
-//		
+//
 //		if(leftInfo != null) {
 //			min = Math.min(min, leftInfo.min);
 //			max = Math.max(max, leftInfo.max);
@@ -102,12 +102,12 @@ public class Code05_MaxSubBSTSize {
 //			min = Math.min(min, rightInfo.min);
 //			max = Math.max(max, rightInfo.max);
 //		}
-//		
-//		
-//		
-//		
-//		
-//		
+//
+//
+//
+//
+//
+//
 //
 //		int maxSubBSTSize = 0;
 //		if(leftInfo != null) {
@@ -117,8 +117,8 @@ public class Code05_MaxSubBSTSize {
 //			maxSubBSTSize = Math.max(maxSubBSTSize, rightInfo.maxSubBSTSize);
 //		}
 //		boolean isAllBST = false;
-//		
-//		
+//
+//
 //		if(
 //				// 左树整体需要是搜索二叉树
 //				(  leftInfo == null ? true : leftInfo.isAllBST    )
@@ -129,19 +129,19 @@ public class Code05_MaxSubBSTSize {
 //				(leftInfo == null ? true : leftInfo.max < X.value)
 //				&&
 //				(rightInfo == null ? true : rightInfo.min > X.value)
-//				
-//				
+//
+//
 //				) {
-//			
-//			maxSubBSTSize = 
+//
+//			maxSubBSTSize =
 //					(leftInfo == null ? 0 : leftInfo.maxSubBSTSize)
 //					+
 //					(rightInfo == null ? 0 : rightInfo.maxSubBSTSize)
 //					+
 //					1;
 //					isAllBST = true;
-//			
-//			
+//
+//
 //		}
 //		return new Info(isAllBST, maxSubBSTSize, min, max);
 //	}

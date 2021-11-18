@@ -148,6 +148,40 @@ public class Code06_MaxDistance {
 		return new Info(maxDistance, height);
 	}
 
+
+	//my code
+	public static int myMaxDistance(Node head){
+		if(head == null){
+			return 0;
+		}
+		return myProcess(head).maxDistance;
+	}
+
+	public static class myInfo{
+		private int maxDistance;
+		private int height;
+		public myInfo(int maxDistance, int height){
+			this.maxDistance = maxDistance;
+			this.height = height;
+		}
+	}
+
+	public static myInfo myProcess(Node head){
+		if(head == null){
+			return new myInfo(0,0);
+		}
+		myInfo leftInfo = myProcess(head.left);
+		myInfo rightInfo = myProcess(head.right);
+		int height = Math.max(leftInfo.height, rightInfo.height) + 1;
+		int leftdistance = leftInfo.maxDistance;
+		int rightdistance = rightInfo.maxDistance;
+		int involveSelf = leftInfo.height + rightInfo.height + 1;
+		int maxD = Math.max(Math.max(leftdistance, rightdistance), involveSelf);
+		return new myInfo(maxD, height);
+	}
+
+	//
+
 	// for test
 	public static Node generateRandomBST(int maxLevel, int maxValue) {
 		return generate(1, maxLevel, maxValue);
@@ -170,7 +204,8 @@ public class Code06_MaxDistance {
 		int testTimes = 1000000;
 		for (int i = 0; i < testTimes; i++) {
 			Node head = generateRandomBST(maxLevel, maxValue);
-			if (maxDistance1(head) != maxDistance2(head)) {
+//			if (maxDistance1(head) != maxDistance2(head)) {
+			if (myMaxDistance(head) != maxDistance2(head)) {
 				System.out.println("Oops!");
 			}
 		}

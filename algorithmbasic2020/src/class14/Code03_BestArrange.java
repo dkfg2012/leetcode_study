@@ -1,7 +1,9 @@
 package class14;
 
+import javax.sound.sampled.Port;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class Code03_BestArrange {
 
@@ -80,6 +82,44 @@ public class Code03_BestArrange {
 
 	}
 
+
+	//my code
+	public static class myComparator implements Comparator<Program>{
+		@Override
+		public int compare(Program p1, Program p2){
+			return p1.end - p2.end;
+		}
+	}
+
+	public static int myBestArrange(Program[] programs){
+		if(programs == null || programs.length == 0){
+			return 0;
+		}
+		PriorityQueue<Program> minHeap = new PriorityQueue<>(new myComparator());
+		int ans = 0;
+		int thisProgramStart = 0;
+		int lastProgramEnd = 0;
+		for(Program program : programs){
+			minHeap.add(program);
+		}
+
+		Program thisP = minHeap.poll();
+		lastProgramEnd = thisP.end;
+		ans++;
+
+		while(!minHeap.isEmpty()){
+			thisP = minHeap.poll();
+			thisProgramStart = thisP.start;
+			if(lastProgramEnd <= thisProgramStart){
+				lastProgramEnd = thisP.end;
+				ans++;
+			}
+		}
+		return ans;
+	}
+
+
+
 	// for test
 	public static Program[] generatePrograms(int programSize, int timeMax) {
 		Program[] ans = new Program[(int) (Math.random() * (programSize + 1))];
@@ -95,14 +135,24 @@ public class Code03_BestArrange {
 		return ans;
 	}
 
+	public static void printPrograms(Program[] programs){
+		for(Program program: programs){
+			System.out.println("start " + Integer.valueOf(program.start) + " " + "end " + Integer.valueOf(program.end));
+			System.out.println("");
+		}
+	}
+
 	public static void main(String[] args) {
 		int programSize = 12;
 		int timeMax = 20;
 		int timeTimes = 1000000;
 		for (int i = 0; i < timeTimes; i++) {
 			Program[] programs = generatePrograms(programSize, timeMax);
-			if (bestArrange1(programs) != bestArrange2(programs)) {
+//			if (bestArrange1(programs) != bestArrange2(programs)) {
+			if (myBestArrange(programs) != bestArrange2(programs)) {
+				printPrograms(programs);
 				System.out.println("Oops!");
+				break;
 			}
 		}
 		System.out.println("finish!");
