@@ -1,5 +1,5 @@
 package class12;
-
+import class11.Code04_PrintBinaryTree;
 
 import java.util.ArrayList;
 
@@ -55,15 +55,15 @@ public class Code05_MaxSubBSTSize {
 //		}
 //		return process(head).maxSubBSTSize;
 //	}
-//	
-//	
-//	
-//	
-//	
-//	
-//	
-//	
-//	
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //	// 任何子树
 //	public static class Info {
 //		public boolean isAllBST;
@@ -78,22 +78,22 @@ public class Code05_MaxSubBSTSize {
 //			max = ma;
 //		}
 //	}
-//	
-//	
-//	
-//	
+//
+//
+//
+//
 //	public static Info process(Node X) {
 //		if(X == null) {
 //			return null;
 //		}
 //		Info leftInfo = process(X.left);
 //		Info rightInfo = process(X.right);
-//		
-//		
-//		
+//
+//
+//
 //		int min = X.value;
 //		int max = X.value;
-//		
+//
 //		if(leftInfo != null) {
 //			min = Math.min(min, leftInfo.min);
 //			max = Math.max(max, leftInfo.max);
@@ -102,12 +102,12 @@ public class Code05_MaxSubBSTSize {
 //			min = Math.min(min, rightInfo.min);
 //			max = Math.max(max, rightInfo.max);
 //		}
-//		
-//		
-//		
-//		
-//		
-//		
+//
+//
+//
+//
+//
+//
 //
 //		int maxSubBSTSize = 0;
 //		if(leftInfo != null) {
@@ -117,8 +117,8 @@ public class Code05_MaxSubBSTSize {
 //			maxSubBSTSize = Math.max(maxSubBSTSize, rightInfo.maxSubBSTSize);
 //		}
 //		boolean isAllBST = false;
-//		
-//		
+//
+//
 //		if(
 //				// 左树整体需要是搜索二叉树
 //				(  leftInfo == null ? true : leftInfo.isAllBST    )
@@ -129,19 +129,19 @@ public class Code05_MaxSubBSTSize {
 //				(leftInfo == null ? true : leftInfo.max < X.value)
 //				&&
 //				(rightInfo == null ? true : rightInfo.min > X.value)
-//				
-//				
+//
+//
 //				) {
-//			
-//			maxSubBSTSize = 
+//
+//			maxSubBSTSize =
 //					(leftInfo == null ? 0 : leftInfo.maxSubBSTSize)
 //					+
 //					(rightInfo == null ? 0 : rightInfo.maxSubBSTSize)
 //					+
 //					1;
 //					isAllBST = true;
-//			
-//			
+//
+//
 //		}
 //		return new Info(isAllBST, maxSubBSTSize, min, max);
 //	}
@@ -238,45 +238,35 @@ public class Code05_MaxSubBSTSize {
 		}
 		myInfo leftI = myProcess(head.left);
 		myInfo rightI = myProcess(head.right);
-		boolean isBST = false;
+		boolean isBST = true;
+		int mySize = 1;
+		int maxSize = 1;
 		int max = head.value;
 		int min = head.value;
-		int LTreeSize = -1;
-		int RTreeSize = -1;
-		int mySize = 1;
 		if(leftI != null){
-			min = Math.min(min, leftI.min);
-			max = Math.max(max, leftI.max);
-			LTreeSize = leftI.size;
+			if(leftI.isBST && leftI.max < head.value){
+				mySize = leftI.size + mySize;
+				maxSize = Math.max(mySize, maxSize);
+				min = Math.min(min, leftI.min);
+				max = Math.max(max, leftI.max);
+			}else{
+				isBST = false;
+				maxSize = Math.max(Math.max(leftI.size, maxSize),mySize);
+			}
 		}
 
 		if(rightI != null){
-			min = Math.min(min, rightI.min);
-			max = Math.max(max, rightI.max);
-			RTreeSize = rightI.size;
-		}
-
-		if(leftI != null && rightI != null){
-			if(leftI.isBST && rightI.isBST && leftI.max < head.value && rightI.min > head.value){
-				isBST = true;
-				mySize = 1 + LTreeSize + RTreeSize;
-			}
-		}else if(leftI != null && rightI == null){
-			if(leftI.isBST && leftI.max < head.value){
-				isBST = true;
-				mySize = 1 + LTreeSize;
-			}
-		}else if(rightI != null && leftI == null){
 			if(rightI.isBST && rightI.min > head.value){
-				isBST = true;
-				mySize = 1 + RTreeSize;
+				mySize = rightI.size + mySize;
+				maxSize = Math.max(mySize, maxSize);
+				min = Math.min(min, rightI.min);
+				max = Math.max(max, rightI.max);
+			}else{
+				isBST = false;
+				maxSize = Math.max(Math.max(rightI.size, maxSize), mySize);
 			}
-		}else{
-			isBST = true;
-			mySize = 1;
 		}
-		mySize = Math.max(Math.max(mySize, LTreeSize), RTreeSize);
-		return new myInfo(isBST, min, max, mySize);
+		return new myInfo(isBST, min, max, maxSize);
 
 	}
 
@@ -304,7 +294,7 @@ public class Code05_MaxSubBSTSize {
 		System.out.println();
 	}
 
-	public static void printInOrder(Node head, int height, String to, int len) {
+	private static void printInOrder(Node head, int height, String to, int len) {
 		if (head == null) {
 			return;
 		}
@@ -337,14 +327,16 @@ public class Code05_MaxSubBSTSize {
 			int my = mygetBSTSize(head);
 			int ans = maxSubBSTSize2(head);
 			if (my != ans) {
-				printTree(head);
 				System.out.println(my);
 				System.out.println(ans);
+				printTree(head);
 				System.out.println("Oops!");
 				break;
 			}
+			System.out.println("pass");
 		}
 		System.out.println("finish!");
 	}
+
 
 }

@@ -66,6 +66,29 @@ public class Code05_LowestLexicography {
 		return res;
 	}
 
+
+
+	//my code
+	public static class sComparator implements Comparator<String>{
+		@Override
+		public int compare(String a, String b){
+			return (a + b).compareTo(b + a);
+		}
+	}
+
+	public static String myLowestString(String[] strs){
+		if(strs == null || strs.length == 0){
+			return "";
+		}
+		Arrays.sort(strs, new sComparator());
+		String r = "";
+		for(String s : strs){
+			r+=s;
+		}
+		return r;
+	}
+
+
 	// for test
 	public static String generateRandomString(int strLen) {
 		char[] ans = new char[(int) (Math.random() * strLen) + 1];
@@ -102,7 +125,8 @@ public class Code05_LowestLexicography {
 		for (int i = 0; i < testTimes; i++) {
 			String[] arr1 = generateRandomStringArray(arrLen, strLen);
 			String[] arr2 = copyStringArray(arr1);
-			if (!lowestString1(arr1).equals(lowestString2(arr2))) {
+//			if (!lowestString1(arr1).equals(lowestString2(arr2))) {
+			if (!myLowestString(arr1).equals(lowestString2(arr2))) {
 				for (String str : arr1) {
 					System.out.print(str + ",");
 				}
