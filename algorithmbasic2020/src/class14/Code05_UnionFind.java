@@ -62,7 +62,7 @@ public class Code05_UnionFind {
 			}
 		}
 
-		public int sets() {
+		public int size() {
 			return sizeMap.size();
 		}
 
@@ -85,9 +85,9 @@ public class Code05_UnionFind {
 		private HashMap<Node<V>, Integer> sizeMap;
 
 		public myUnionFind(List<V> values){
-			this.nodes = nodes;
-			this.parents = parents;
-			this.sizeMap = sizeMap;
+			this.nodes = new HashMap<>();
+			this.parents = new HashMap<>();
+			this.sizeMap = new HashMap<>();
 			for(V value : values){
 				Node<V> node = new Node<>(value);
 				nodes.put(value, node);
@@ -131,9 +131,5 @@ public class Code05_UnionFind {
 		}
 
 	}
-
-
-
-
 
 }

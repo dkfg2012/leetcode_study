@@ -235,6 +235,114 @@ public class Code02_NumberOfIslands {
 
 	}
 
+
+
+	//my code
+	public static class myUnionFind{
+		private int[] parents;
+		private int[] sizes;
+		private int[] help;
+		private int unionSize;
+		private int row;
+		private int col;
+
+		public myUnionFind(char[][] board){
+			row = board.length;
+			col = board[0].length;
+			parents = new int[row * col];
+			sizes = new int[row * col];
+			help = new int[row * col];
+			unionSize = 0;
+			for(int i = 0; i < row; i++){
+				for(int j = 0; j < col; j++){
+					if(board[i][j] == '1'){
+						int location = i * col + j;
+						parents[location] = location;
+						sizes[location] = 1;
+						unionSize++;
+					}
+				}
+			}
+		}
+
+
+		private int numOfUnion(){ return unionSize; }
+
+		private int find(int i){
+			int helpIndex = 0;
+			while(i != parents[i]){
+				help[helpIndex] = i;
+				helpIndex++;
+				i = parents[i];
+			}
+			//helpIndex--; // helpIndex here represent the length of valid data in help array, so in terms on index, we need to --;
+			for(int j = 0; j < helpIndex; j++){
+				int index = help[j];
+				parents[index] = i;
+			}
+//			while(helpIndex > 0){
+//				int index = help[helpIndex];
+//				parents[index] = i;
+//				helpIndex--;
+//			}
+
+			return i;
+		}
+
+
+		private boolean isSameSet(int i, int j){
+			return find(i) == find(j);
+		}
+
+		private void union(int ir, int ic, int jr, int jc){
+			int iHead = find(ir * col + ic);
+			int jHead = find(jr * col + jc);
+			if(iHead != jHead){
+				int iSize = sizes[iHead];
+				int jSize = sizes[jHead];
+				int largerOne = iSize > jSize ? iHead : jHead;
+				int smallerOne = largerOne == iHead ? jHead : iHead;
+				parents[smallerOne] = largerOne;
+				sizes[largerOne] = iSize + jSize;
+				unionSize--;
+			}
+		}
+
+	}
+
+	public static int mynumIslands(char[][] board){
+		int row = board.length;
+		int col = board[0].length;
+		myUnionFind union = new myUnionFind(board);
+		for(int i = 1; i < col; i++){
+			if(board[0][i - 1] == '1' && board[0][i] == '1'){
+				union.union(0, i-1, 0, i);
+			}
+		}
+		for(int i = 1; i < row; i++){
+			if(board[i - 1][0] == '1' && board[i][0] == '1'){
+				union.union(i-1, 0, i, 0);
+			}
+		}
+		for(int i = 1; i < row; i++){
+			for(int j = 1; j < col; j++){
+				if(board[i][j] == '1'){
+					if(board[i][j-1] == '1'){
+						union.union(i,j, i, j-1);
+					}
+					if(board[i-1][j] == '1'){
+						union.union(i,j, i-1, j);
+					}
+				}
+			}
+		}
+		return union.numOfUnion();
+
+	}
+
+
+
+
 	// 为了测试
 	public static char[][] generateRandomMatrix(int row, int col) {
 		char[][] board = new char[row][col];
@@ -283,34 +391,36 @@ public class Code02_NumberOfIslands {
 		end = System.currentTimeMillis();
 		System.out.println("感染方法的运行时间: " + (end - start) + " ms");
 
+
 		start = System.currentTimeMillis();
-		System.out.println("并查集(map实现)的运行结果: " + numIslands1(board2));
+		System.out.println("并查集(数组实现)的运行结果: " + numIslands2(board3));
+		end = System.currentTimeMillis();
+		System.out.println("并查集(数组实现)的运行时间: " + (end - start) + " ms");
+
+		start = System.currentTimeMillis();
+//		System.out.println("并查集(map实现)的运行结果: " + numIslands1(board2));
+		System.out.println("并查集(map实现)的运行结果: " + mynumIslands(board2));
 		end = System.currentTimeMillis();
 		System.out.println("并查集(map实现)的运行时间: " + (end - start) + " ms");
-
-		start = System.currentTimeMillis();
-		System.out.println("并查集(数组实现)的运行结果: " + numIslands2(board3));
-		end = System.currentTimeMillis();
-		System.out.println("并查集(数组实现)的运行时间: " + (end - start) + " ms");
-
-		System.out.println();
-
-		row = 10000;
-		col = 10000;
-		board1 = generateRandomMatrix(row, col);
-		board3 = copy(board1);
-		System.out.println("感染方法、并查集(数组实现)的运行结果和运行时间");
-		System.out.println("随机生成的二维矩阵规模 : " + row + " * " + col);
-
-		start = System.currentTimeMillis();
-		System.out.println("感染方法的运行结果: " + numIslands3(board1));
-		end = System.currentTimeMillis();
-		System.out.println("感染方法的运行时间: " + (end - start) + " ms");
-
-		start = System.currentTimeMillis();
-		System.out.println("并查集(数组实现)的运行结果: " + numIslands2(board3));
-		end = System.currentTimeMillis();
-		System.out.println("并查集(数组实现)的运行时间: " + (end - start) + " ms");
+		System.out.println("finish");
+//		System.out.println();
+//
+//		row = 10000;
+//		col = 10000;
+//		board1 = generateRandomMatrix(row, col);
+//		board3 = copy(board1);
+//		System.out.println("感染方法、并查集(数组实现)的运行结果和运行时间");
+//		System.out.println("随机生成的二维矩阵规模 : " + row + " * " + col);
+//
+//		start = System.currentTimeMillis();
+//		System.out.println("感染方法的运行结果: " + numIslands3(board1));
+//		end = System.currentTimeMillis();
+//		System.out.println("感染方法的运行时间: " + (end - start) + " ms");
+//
+//		start = System.currentTimeMillis();
+//		System.out.println("并查集(数组实现)的运行结果: " + numIslands2(board3));
+//		end = System.currentTimeMillis();
+//		System.out.println("并查集(数组实现)的运行时间: " + (end - start) + " ms");
 
 	}
 
