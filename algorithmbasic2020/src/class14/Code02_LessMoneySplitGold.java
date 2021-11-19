@@ -1,5 +1,6 @@
 package class14;
 
+import java.util.Arrays;
 import java.util.PriorityQueue;
 
 public class Code02_LessMoneySplitGold {
@@ -54,6 +55,29 @@ public class Code02_LessMoneySplitGold {
 		return sum;
 	}
 
+
+	//my code
+	public static int myLessMoney(int[] arr){
+		if(arr == null || arr.length == 0){
+			return 0;
+		}
+		int r = 0;
+		int currentCut = 0;
+		PriorityQueue<Integer> pq = new PriorityQueue<>();
+		for(int i : arr){
+			pq.add(i);
+		}
+		while(pq.size() > 1){
+			currentCut = pq.poll() + pq.poll();
+			r += currentCut;
+			pq.add(currentCut);
+		}
+		return r;
+
+	}
+
+
+
 	// for test
 	public static int[] generateRandomArray(int maxSize, int maxValue) {
 		int[] arr = new int[(int) ((maxSize + 1) * Math.random())];
@@ -69,7 +93,8 @@ public class Code02_LessMoneySplitGold {
 		int maxValue = 1000;
 		for (int i = 0; i < testTime; i++) {
 			int[] arr = generateRandomArray(maxSize, maxValue);
-			if (lessMoney1(arr) != lessMoney2(arr)) {
+//			if (lessMoney1(arr) != lessMoney2(arr)) {
+			if (myLessMoney(arr) != lessMoney2(arr)) {
 				System.out.println("Oops!");
 			}
 		}

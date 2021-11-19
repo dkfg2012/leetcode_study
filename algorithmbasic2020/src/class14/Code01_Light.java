@@ -60,6 +60,42 @@ public class Code01_Light {
 		return light;
 	}
 
+
+	//my code
+	public static int myMinLight(String road){
+		if(road == null || road.length() == 0){
+			return 0;
+		}
+		int r = 0;
+		char[] chars = new char[road.length() + 1];
+		int index = 0;
+		for(char s : road.toCharArray()){
+			chars[index++] = s;
+		}
+		chars[index++] = 'X';
+		for(int i = 0; i < chars.length - 1; i++){
+			if(chars[i] == 'X'){
+				//cannot place
+				continue;
+			}else{
+				//can place
+				if(chars[i+1] == 'X'){
+					//must place here
+//					System.out.println("place on " + String.valueOf(i));
+					r++;
+				}else{
+					//place in i+1
+					i++;
+//					System.out.println("place on " + String.valueOf(i));
+					r++;
+					i++;
+				}
+			}
+		}
+		return r;
+	}
+
+
 	// for test
 	public static String randomString(int len) {
 		char[] res = new char[(int) (Math.random() * len) + 1];
@@ -74,10 +110,16 @@ public class Code01_Light {
 		int testTime = 100000;
 		for (int i = 0; i < testTime; i++) {
 			String test = randomString(len);
-			int ans1 = minLight1(test);
+//			test = "....";
+//			int ans1 = minLight1(test);
+			int ans1 = myMinLight(test);
 			int ans2 = minLight2(test);
 			if (ans1 != ans2) {
+				System.out.println(ans1);
+				System.out.println(ans2);
 				System.out.println("oops!");
+				System.out.println(test);
+				break;
 			}
 		}
 		System.out.println("finish!");
