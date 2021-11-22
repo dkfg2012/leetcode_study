@@ -28,7 +28,31 @@ public class Code02_DFS {
 		}
 	}
 	
-	
+
+
+	//my code
+	public static void myDfs(Node head){
+		if(head == null){
+			return;
+		}
+		Stack<Node> st = new Stack<>();
+		HashSet<Node> hs = new HashSet<>();
+		st.add(head);
+		hs.add(head);
+		while(!st.isEmpty()){
+			Node cur = st.pop();
+			System.out.println("do sth");
+			for(Node next: cur.nexts){
+				if(!hs.contains(next)){
+					st.push(cur);
+					st.push(next);
+					hs.add(next);
+					break;
+				}
+			}
+		}
+	}
+
 	
 
 }

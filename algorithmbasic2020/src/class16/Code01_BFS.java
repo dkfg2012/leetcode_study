@@ -27,4 +27,26 @@ public class Code01_BFS {
 		}
 	}
 
+
+	//my code
+	public static void myBfs(Node head){
+		if(head == null){
+			return;
+		}
+		Queue<Node> q = new LinkedList<>();
+		HashSet<Node> s = new HashSet<>();
+		q.add(head);
+		s.add(head);
+		while(!q.isEmpty()){
+			Node cur = q.poll();
+			System.out.println("do something");
+			for(Node next: cur.nexts){
+				if(!s.contains(next)){
+					q.add(next);
+					s.add(next);
+				}
+			}
+		}
+	}
+
 }
