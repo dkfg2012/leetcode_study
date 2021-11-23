@@ -1,8 +1,6 @@
 package class16;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 // OJ链接：https://www.lintcode.com/problem/topological-sorting
 public class Code03_TopologicalOrderDFS2 {
@@ -71,6 +69,40 @@ public class Code03_TopologicalOrderDFS2 {
 		Record ans = new Record(cur, nodes + 1);
 		order.put(cur, ans);
 		return ans;
+	}
+
+
+
+
+	//my code
+	public static ArrayList<DirectedGraphNode> myTopSort(ArrayList<DirectedGraphNode> graph){
+		HashMap<DirectedGraphNode, Boolean> visited = new HashMap<>();
+		Stack<DirectedGraphNode> st = new Stack<>();
+
+		for(DirectedGraphNode node : graph){
+			visited.put(node, false);
+		}
+		for(DirectedGraphNode node : graph){
+			if(visited.get(node) == false){
+				helpFunction(node, visited, st);
+			}
+		}
+		ArrayList<DirectedGraphNode> r = new ArrayList<>();
+		while(!st.isEmpty()){
+			DirectedGraphNode cur = st.pop();
+			r.add(cur);
+		}
+		return r;
+	}
+
+	public static void helpFunction(DirectedGraphNode node, HashMap<DirectedGraphNode, Boolean> visited, Stack<DirectedGraphNode> st){
+		visited.put(node, true);
+		for(DirectedGraphNode next : node.neighbors){
+			if(visited.get(next) == false){
+				helpFunction(next, visited, st);
+			}
+		}
+		st.push(node);
 	}
 
 }

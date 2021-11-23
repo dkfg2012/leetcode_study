@@ -87,6 +87,44 @@ public class Code05_Prim {
 		return sum;
 	}
 
+
+	//my code
+	public static class myComparator implements Comparator<Edge>{
+		@Override
+		public int compare(Edge o1, Edge o2) {
+			return o1.weight - o2.weight;
+		}
+	}
+
+
+	public static Set<Edge> myPrim(Graph graph){
+		Set<Edge> edgeSet = new HashSet<>();
+		HashSet<Node> nodeSet = new HashSet<>();
+		PriorityQueue<Edge> pq = new PriorityQueue(new myComparator());
+		for(int i = 0; i < graph.nodes.size(); i++){
+			Node cur = graph.nodes.get(i);
+			if(!nodeSet.contains(cur)){
+				nodeSet.add(cur);
+				for(Edge edge: cur.edges){
+					pq.offer(edge);
+				}
+				while(!pq.isEmpty()){
+					Edge smallestEdge = pq.poll();
+					if(!nodeSet.contains(smallestEdge.to)){
+						nodeSet.add(smallestEdge.to);
+						edgeSet.add(smallestEdge);
+						for(Edge nextEdge : smallestEdge.to.edges){
+							pq.offer(nextEdge);
+						}
+					}
+				}
+			}
+		}
+		return edgeSet;
+	}
+
+
+
 	public static void main(String[] args) {
 		System.out.println("hello world!");
 	}

@@ -1,5 +1,6 @@
 package class16;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -48,6 +49,39 @@ public class Code03_TopologicalOrderBFS {
 			}
 		}
 		return ans;
+	}
+
+	//my code
+	public static ArrayList<DirectedGraphNode> myBFSTopSort(ArrayList<DirectedGraphNode> graph){
+		HashMap<DirectedGraphNode, Integer> hm = new HashMap<>();
+		//initialization
+		for(DirectedGraphNode node : graph){
+			hm.put(node, 0);
+		}
+		for(DirectedGraphNode node : graph){
+			for(DirectedGraphNode next: node.neighbors){
+				hm.put(next, hm.get(next) + 1);
+			}
+		}
+		Queue<DirectedGraphNode> q = new LinkedList<>();
+		ArrayList<DirectedGraphNode> r = new ArrayList<>();
+		for(DirectedGraphNode node : graph){
+			if(hm.get(node) == 0){
+				q.offer(node);
+			}
+		}
+		while(!q.isEmpty()){
+			DirectedGraphNode cur = q.poll();
+			r.add(cur);
+			for(DirectedGraphNode node : cur.neighbors){
+				int times = hm.get(node) - 1;
+				if(times == 0){
+					q.offer(node);
+				}
+				hm.put(node, times);
+			}
+		}
+		return r;
 	}
 
 }

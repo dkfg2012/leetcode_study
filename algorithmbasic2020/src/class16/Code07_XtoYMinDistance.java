@@ -1,5 +1,6 @@
 package class16;
 
+import java.util.Comparator;
 import java.util.PriorityQueue;
 
 // 本文件没有在课上讲
@@ -142,6 +143,61 @@ public class Code07_XtoYMinDistance {
 		return roads;
 	}
 
+
+	//my code
+	public static class myNode{
+		private int cityIndex;
+		private int pathSum;
+		public myNode(int cityIndex, int pathSum){
+			this.cityIndex = cityIndex;
+			this.pathSum = pathSum;
+		}
+	}
+
+	public static class myComparator implements Comparator<myNode>{
+		@Override
+		public int compare(myNode o1, myNode o2) {
+			return o1.pathSum - o2.pathSum;
+		}
+	}
+
+	public static int myMinDistance(int n, int m, int[][] roads, int x, int y){
+		int[][] map = new int[n+1][n+1];
+		for(int i = 0; i <= n; i++){
+			for(int j = 0; j <= n; j++){
+				map[i][j] = Integer.MAX_VALUE;
+			}
+		}
+		for(int[] road : roads){
+			map[road[0]][road[1]] = Math.min(map[road[0]][road[1]], road[2]);
+			map[road[1]][road[0]] = Math.min(map[road[1]][road[0]], road[2]);
+		}
+
+		boolean[] computed = new boolean[n+1];
+		PriorityQueue<myNode> minHeap = new PriorityQueue<>(new myComparator());
+		minHeap.add(new myNode(x, 0));
+		while(!minHeap.isEmpty()){
+			myNode cur = minHeap.poll();
+			if(computed[cur.cityIndex]){
+				continue;
+			}
+			if(cur.cityIndex == y){
+				return cur.pathSum;
+			}
+			computed[cur.cityIndex] = true;
+			for(int next = 1; next <= n; next++){
+				//map[cur.cityIndex][next] = Integer.Max means there are no road from current city to next
+				if(next != cur.cityIndex && map[cur.cityIndex][next] != Integer.MAX_VALUE && !computed[next]){
+					minHeap.add(new myNode(next, cur.pathSum + map[cur.cityIndex][next]));
+				}
+			}
+		}
+		return Integer.MAX_VALUE;
+	}
+
+
+
+
 	// 为了测试
 	public static void main(String[] args) {
 		// 城市数量n，下标从1开始，不从0开始
@@ -163,11 +219,11 @@ public class Code07_XtoYMinDistance {
 		int x = 2;
 		int y = 4;
 
-		// 暴力方法的解
-		System.out.println(minDistance1(n, m, roads, x, y));
+//		 暴力方法的解
+//		System.out.println(minDistance1(n, m, roads, x, y));
 
 		// Dijkstra的解
-		System.out.println(minDistance2(n, m, roads, x, y));
+//		System.out.println(minDistance2(n, m, roads, x, y));
 
 		// 下面开始随机验证
 		int cityMaxSize = 12;
@@ -181,7 +237,8 @@ public class Code07_XtoYMinDistance {
 			x = (int) (Math.random() * n) + 1;
 			y = (int) (Math.random() * n) + 1;
 			int ans1 = minDistance1(n, m, roads, x, y);
-			int ans2 = minDistance2(n, m, roads, x, y);
+//			int ans2 = minDistance2(n, m, roads, x, y);
+			int ans2 = myMinDistance(n, m, roads, x, y);
 			if (ans1 != ans2) {
 				System.out.println("出错了！");
 			}

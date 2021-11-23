@@ -98,4 +98,42 @@ public class Code04_Kruskal {
 		}
 		return result;
 	}
+
+
+	//my code
+	public static class myComparator implements Comparator<Edge>{
+		@Override
+		public int compare(Edge e1, Edge e2){
+			return e1.weight - e2.weight;
+		}
+	}
+
+
+	public static Set<Edge> mykruskal(Graph graph){
+		HashSet<Edge> edgeSet = new HashSet<>();
+		HashSet<Node> nodeSet = new HashSet<>();
+		PriorityQueue<Edge> pq = new PriorityQueue<>(new myComparator());
+		for(Edge edge : graph.edges){
+			pq.add(edge);
+			if(!nodeSet.contains(edge.from)){
+				nodeSet.add(edge.from);
+			}
+			if(!nodeSet.contains(edge.to)){
+				nodeSet.add(edge.to);
+			}
+		}
+		while(!pq.isEmpty()){
+			Edge edge = pq.poll();
+			if(nodeSet.contains(edge.from) || nodeSet.contains(edge.to)){
+				edgeSet.add(edge);
+				if(nodeSet.contains(edge.from)){
+					nodeSet.remove(edge.from);
+				}
+				if(nodeSet.contains(edge.to)){
+					nodeSet.remove(edge.to);
+				}
+			}
+		}
+		return edgeSet;
+	}
 }
