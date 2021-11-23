@@ -27,6 +27,29 @@ public class Code05_ReverseStackUsingRecursive {
 		}
 	}
 
+
+	//my code
+	//透過遞歸，把stack的最前int拿出來,然後原樣返回，知道全都拿出來了，就再按遞歸的反順序放回去，例如最後拿出5就最先把5放回去
+	public static void myReverse(Stack<Integer> stack){
+		if(stack.isEmpty()){
+			return;
+		}
+		int i = myProcess(stack);
+		myReverse(stack); //first recurse, get 1, second recurse get 2 ...
+		stack.push(i);
+	}
+
+	public static int myProcess(Stack<Integer> s){
+		int i = s.pop();
+		if(s.isEmpty()){
+			return i;
+		}else{
+			int j = myProcess(s); //j is i when s.empty, so must be the int that add earliest
+			s.push(i);
+			return j;
+		}
+	}
+
 	public static void main(String[] args) {
 		Stack<Integer> test = new Stack<Integer>();
 		test.push(1);
@@ -34,7 +57,8 @@ public class Code05_ReverseStackUsingRecursive {
 		test.push(3);
 		test.push(4);
 		test.push(5);
-		reverse(test);
+//		reverse(test);
+		myReverse(test);
 		while (!test.isEmpty()) {
 			System.out.println(test.pop());
 		}

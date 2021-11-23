@@ -55,10 +55,38 @@ public class Code03_PrintAllSubsquences {
 		process2(str, index + 1, set, yes);
 	}
 
+
+	//my code
+	public static List<String> mySubNoRepeat(String s){
+		char[] str = s.toCharArray();
+		List<String> r = new ArrayList<>();
+		HashSet<String> hs = new HashSet<>();
+		String prefix = "";
+		myProcess(str, hs, 0, prefix);
+		for(String p : hs){
+			r.add(p);
+		}
+		return r;
+	}
+
+	public static void myProcess(char[] s, HashSet<String> hs, int index, String prefix){
+		if(index == s.length){
+			hs.add(prefix);
+			return;
+		}
+		String excludeSelf = prefix;
+		String includeSelf = prefix + String.valueOf(s[index]);
+		myProcess(s, hs, index + 1, excludeSelf);
+		myProcess(s, hs, index + 1, includeSelf);
+	}
+
+
+
 	public static void main(String[] args) {
 		String test = "acccc";
 		List<String> ans1 = subs(test);
 		List<String> ans2 = subsNoRepeat(test);
+		List<String> ans3 = mySubNoRepeat(test);
 
 		for (String str : ans1) {
 			System.out.println(str);
@@ -67,6 +95,10 @@ public class Code03_PrintAllSubsquences {
 		for (String str : ans2) {
 			System.out.println(str);
 		}
+		System.out.println("=================");
+		for (String str : ans3) {
+					System.out.println(str);
+				}
 		System.out.println("=================");
 
 	}
