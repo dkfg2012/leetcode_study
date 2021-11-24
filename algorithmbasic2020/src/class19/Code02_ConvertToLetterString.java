@@ -88,6 +88,54 @@ public class Code02_ConvertToLetterString {
 		return dp[N - 1];
 	}
 
+
+	//my code
+	public static int myNumber(String str){
+		if(str == null || str.length() == 0){
+			return 0;
+		}
+		return myProcess(str.toCharArray(), 0);
+	}
+
+	public static int myProcess(char[] str, int i){
+		if(i == str.length){
+			return 1;
+		}
+		if(str[i] == '0'){
+			return 0;
+		}
+		int r = 0;
+		r += myProcess(str, i+1);
+		if(i + 1 < str.length){
+			if(str[i] == '1' || (str[i] == '2' && str[i+1] - '0' < 7)){
+				r += myProcess(str, i+2);
+			}
+		}
+		return r;
+	}
+
+
+	public static int myDPnumber(String str){
+		if (str == null || str.length() == 0) {
+			return 0;
+		}
+		char[] c = str.toCharArray();
+		int[] dp = new int[c.length + 1];
+		dp[c.length] = 1;
+		for(int i = c.length - 1; i >= 0; i--){
+			if(c[i] != '0'){
+				int r = dp[i+1];
+				if(i+1 < c.length && (c[i] == '1' || (c[i] == '2' && c[i+1] - '0' < 7))){
+					r += dp[i+2];
+				}
+				dp[i] = r;
+			}
+		}
+		return dp[0];
+	}
+
+
+
 	// 为了测试
 	public static String randomString(int len) {
 		char[] str = new char[len];
@@ -107,7 +155,9 @@ public class Code02_ConvertToLetterString {
 			String s = randomString(len);
 			int ans0 = number(s);
 			int ans1 = dp1(s);
-			int ans2 = dp2(s);
+//			int ans2 = dp2(s);
+//			int ans2 = myNumber(s);
+			int ans2 = myDPnumber(s);
 			if (ans0 != ans1 || ans0 != ans2) {
 				System.out.println(s);
 				System.out.println(ans0);

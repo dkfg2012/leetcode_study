@@ -148,4 +148,54 @@ public class Code03_StickersToSpellWord {
 		return ans;
 	}
 
+	//my code
+	public int minStickers(String[] stickers, String target) {
+		int numberOfStickers = stickers.length;
+		int[][] stickersArray = new int[numberOfStickers][26];
+		int index = 0;
+		for(String s : stickers){
+			char[] c = s.toCharArray();
+			for(char character : c){
+				stickersArray[index][character - 'a'] += 1;
+			}
+			index += 1;
+		}
+		HashMap<String, Integer> dp = new HashMap<>();
+		dp.put("", 0);
+		int r = process(stickersArray, target, dp);
+		return r == Integer.MAX_VALUE ? -1 : r;
+	}
+
+	public int process(int[][] stickersArray, String str, HashMap<String, Integer> dp){
+		if(dp.containsKey(str)){
+			return dp.get(str);
+		}
+		char[] strArray = str.toCharArray();
+		int[] strCounts = new int[26];
+		for(char c : strArray){
+			strCounts[c - 'a'] += 1;
+		}
+		int stickersArrayLength = stickersArray.length;
+		int min = Integer.MAX_VALUE;
+		for(int i = 0; i < stickersArrayLength; i++){
+			int[] sticker = stickersArray[i];
+			if(sticker[strArray[0] - 'a'] != 0){
+				StringBuilder builder = new StringBuilder();
+				for(int j = 0; j < 26; j++){
+					if(strCounts[j] > 0){
+						int strCountsAfterWithSticker = strCounts[j] - sticker[j];
+						for(int k = 0; k < strCountsAfterWithSticker; k++){
+							builder.append((char) (j + 'a'));
+						}
+					}
+				}
+				String strAfterSticker = builder.toString();
+				min = Math.min(min, process(stickersArray, strAfterSticker, dp));
+			}
+		}
+		int r = min + (min == Integer.MAX_VALUE ? 0: 1);
+		dp.put(str,r);
+		return r;
+	}
+
 }

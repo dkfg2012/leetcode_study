@@ -52,12 +52,35 @@ public class Code01_Knapsack {
 		return dp[0][bag];
 	}
 
+
+	//my code
+	public static int myKnapsack(int[] w, int[] v, int bag){
+		if (w == null || v == null || w.length != v.length || w.length == 0) {
+			return 0;
+		}
+		int[][] dp = new int[w.length + 1][bag + 1];
+		for(int item = w.length - 1; item >= 0; item--){
+			for(int weight = 0; weight <= bag; weight++){
+				boolean canTake = weight - w[item] >= 0; //能不能,如果weight說明位置不夠
+				if(canTake){
+					//能拿才考慮拿不拿
+					dp[item][weight] = Math.max(dp[item + 1][weight], dp[item + 1][weight - w[item]] + v[item]);
+				}else{
+					//不能拿就繼承上一個item的結果
+					dp[item][weight] = dp[item + 1][weight];
+				}
+			}
+		}
+		return dp[0][bag];
+	}
+
 	public static void main(String[] args) {
-		int[] weights = { 3, 2, 4, 7, 3, 1, 7 };
-		int[] values = { 5, 6, 3, 19, 12, 4, 2 };
+		int[] weights = { 3, 2, 4, 7, 3, 1, 7,4,5,8,6,2 };
+		int[] values = { 5, 6, 3, 19, 12, 4, 2,4,8,9,6,3 };
 		int bag = 15;
 		System.out.println(maxValue(weights, values, bag));
 		System.out.println(dp(weights, values, bag));
+		System.out.println(myKnapsack(weights, values, bag));
 	}
 
 }
