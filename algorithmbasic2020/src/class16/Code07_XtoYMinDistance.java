@@ -105,8 +105,8 @@ public class Code07_XtoYMinDistance {
 				return cur.pathSum;
 			}
 			computed[cur.city] = true;
-			for (int next = 1; next <= n; next++) {
-				if (next != cur.city && map[cur.city][next] != Integer.MAX_VALUE && !computed[next]) {
+			for (int next = 0; next <= n; next++) {
+				if (next != cur.city && !computed[next] && map[cur.city][next] != Integer.MAX_VALUE) {
 					heap.add(new Node(next, cur.pathSum + map[cur.city][next]));
 				}
 			}

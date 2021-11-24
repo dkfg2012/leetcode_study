@@ -127,13 +127,36 @@ public class Code02_Hanoi {
 		}
 	}
 
+
+	//my code
+	public static void myhanoi(int N){
+		if(N == 1){
+			System.out.println("move 1 from left to right");
+		}
+		process(N, "left", "right", "mid");
+		return;
+	}
+
+	public static void process(int n, String from, String to, String other){
+		if(n == 1){
+			System.out.println("Move " + String.valueOf(n) + " from " + from + " to " + to);
+			return;
+		}
+		process(n-1, from, other, to);
+		System.out.println("Move " + String.valueOf(n) + " from " + from + " to " + to);
+		process(n-1, other, to, from);
+		return;
+	}
+
 	public static void main(String[] args) {
 		int n = 3;
-		hanoi1(n);
-		System.out.println("============");
-		hanoi2(n);
+//		hanoi1(n);
 //		System.out.println("============");
-//		hanoi3(n);
+//		hanoi2(n);
+//		System.out.println("============");
+		hanoi3(n);
+		 System.out.println("============");
+		myhanoi(n);
 	}
 
 }
