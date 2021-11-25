@@ -105,11 +105,40 @@ public class Code02_CardsInLine {
 		return Math.max(fmap[0][N - 1], gmap[0][N - 1]);
 	}
 
+
+
+	//my code
+	public static int myWin(int[] arr){
+		int[][] first = new int[arr.length][arr.length];
+		int[][] second = new int[arr.length][arr.length];
+		for(int i = 0; i < arr.length; i++){
+			//base case
+			//fisrt hand and when there is only one card left (so no second hand)
+			first[i][i] = arr[i];
+		}
+		for(int i = 1; i < arr.length; i++){
+			int L = 0;
+			int R = i;
+			while(R < arr.length){
+				//first hand, when i have L and R to choose
+				first[L][R] = Math.max(arr[L] + second[L+1][R], arr[R] + second[L][R-1]);
+				//second hand, when i have L and R to choose, should choose the one that makes first hand lose (min value)
+				second[L][R] = Math.min(first[L+1][R], first[L][R-1]);
+				L++;
+				R++;
+			}
+		}
+		return Math.max(first[0][arr.length - 1], second[0][arr.length - 1]);
+	}
+
+
+
 	public static void main(String[] args) {
 		int[] arr = { 5, 7, 4, 5, 8, 1, 6, 0, 3, 4, 6, 1, 7 };
 		System.out.println(win1(arr));
 		System.out.println(win2(arr));
 		System.out.println(win3(arr));
+		System.out.println(myWin(arr));
 
 	}
 

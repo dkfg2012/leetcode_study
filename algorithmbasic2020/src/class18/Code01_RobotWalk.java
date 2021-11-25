@@ -85,10 +85,53 @@ public class Code01_RobotWalk {
 		return dp[start][K];
 	}
 
+
+
+	//my code
+	public static int myWay(int N, int start, int aim, int K){
+		if(N < 2 || start < 1 || start > N || aim < 1 || aim > N || K < 1){
+			return -1;
+		}
+		int[][] dp = new int[N+1][K+1];
+		dp[aim][K] = 1;
+		for(int walks = K-1; walks >= 0; walks--){
+			dp[1][walks] = dp[2][walks+1];
+			dp[N][walks] = dp[N-1][walks+1];
+			for(int locations = 2; locations < N; locations++){
+				dp[locations][walks] = dp[locations + 1][walks + 1] + dp[locations - 1][walks + 1];
+			}
+		}
+		return dp[start][0];
+	}
+
+
+	public static int myWay2(int N, int start, int aim, int K){
+		if(N < 2 || start < 1 || start > N || aim < 1 || aim > N || K < 1){
+			return -1;
+		}
+		int[][] dp = new int[N+1][2];
+		dp[aim][0] = 1;
+		for(int walks = 1; walks <= K; walks++){
+			dp[1][1] = dp[2][0];
+			dp[N][1] = dp[N-1][0];
+			for(int locations = 2; locations < N; locations++){
+				dp[locations][1] = dp[locations + 1][0] + dp[locations - 1][0];
+			}
+			for(int i = 1; i <= N; i++){
+				dp[i][0] = dp[i][1];
+			}
+		}
+		return dp[start][0];
+	}
+
+
+
 	public static void main(String[] args) {
-		System.out.println(ways1(5, 2, 4, 6));
-		System.out.println(ways2(5, 2, 4, 6));
-		System.out.println(ways3(5, 2, 4, 6));
+		System.out.println(ways1(10, 2, 4, 5));
+		System.out.println(ways2(10, 2, 4, 5));
+		System.out.println(ways3(10, 2, 4, 5));
+		System.out.println(myWay(10, 2, 4, 5));
+		System.out.println(myWay2(10, 2, 4, 5));
 	}
 
 }
