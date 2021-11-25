@@ -97,13 +97,50 @@ public class Code02_HorseJump {
 		return dp[i][j][step];
 	}
 
+
+	//my code
+	public static int myJumps(int x, int y, int k){
+		if(x < 0 || x > 9 || y < 0 || y > 8){
+			return 0;
+		}
+		return myProcess(0,0,x,y,k);
+	}
+
+	public static int myProcess(int i, int j, int x, int y, int k){
+		if(i < 0 || i > 9 || j < 0 || j > 8){
+			return 0;
+		}
+		if(k == 0){
+			return i == x && j == y ? 1 : 0;
+		}
+		return myProcess(i+1,j+2,x,y,k-1) +  myProcess(i+2,j+1,x,y,k-1) + myProcess(i-2,j-1,x,y,k-1) + myProcess(i-1,j-2,x,y,k-1)
+				+ myProcess(i+2,j-1,x,y,k-1) + myProcess(i+1,j-2,x,y,k-1) + myProcess(i-2,j+1,x,y,k-1) + myProcess(i-1,j+2,x,y,k-1);
+	}
+
+	public static int MybyDP(int x, int y, int k){
+		int[][][] dp = new int[10][9][k+1];
+		dp[x][y][0] = 1;
+		for(int z = 1; z <= k; z++){
+			for(int i = 0; i < 10; i++){
+				for(int j =0; j < 9; j++){
+					dp[i][j][z] = getValue(dp,i+1,j+2,z-1) + getValue(dp,i+2,j+1,z-1) + getValue(dp,i+1,j-2,z-1) + getValue(dp,i+2,j-1,z-1)
+								+ getValue(dp,i-1,j+2,z-1) + getValue(dp,i-2,j+1,z-1) + getValue(dp,i-1,j-2,z-1) + getValue(dp,i-2,j-1,z-1);
+				}
+			}
+		}
+		return dp[0][0][k];
+	}
+
+
+
 	public static void main(String[] args) {
 		int x = 7;
 		int y = 7;
 		int step = 10;
 		System.out.println(ways(x, y, step));
 		System.out.println(dp(x, y, step));
-
 		System.out.println(jump(x, y, step));
+		System.out.println(myJumps(x, y, step));
+		System.out.println(MybyDP(x, y, step));
 	}
 }

@@ -156,6 +156,71 @@ public class Code03_Coffee {
 		return dp[0][0];
 	}
 
+
+
+	//my code
+	public static class myMachine{
+		private int currentTime;
+		private int makeTime;
+		public myMachine(int currentTime, int makeTime){
+			this.currentTime = currentTime;
+			this.makeTime = makeTime;
+		}
+	}
+
+	public static class myComparator implements Comparator<myMachine>{
+		@Override
+		public int compare(myMachine o1, myMachine o2) {
+			return (o1.currentTime + o1.makeTime) - (o2.currentTime + o2.makeTime);
+		}
+	}
+
+
+
+	public static int myMinTime(int[] arr, int n, int a, int b){
+		PriorityQueue<myMachine> minheap = new PriorityQueue<>(new myComparator());
+		for(int makeTime : arr){
+			minheap.add(new myMachine(0, makeTime));
+		}
+		int[] getCoffeeTime = new int[n];
+		for(int i = 0; i < n; i++){
+			myMachine t = minheap.poll();
+			getCoffeeTime[i] = t.makeTime + t.currentTime;
+			t.currentTime = getCoffeeTime[i];
+			minheap.add(t);
+
+		}
+		return process(getCoffeeTime, a, b);
+	}
+
+	public static int process(int[] coffeeTime, int wash, int air){
+		int maxTimeCLean = 0;
+		for(int i = 0; i < coffeeTime.length; i++){
+			maxTimeCLean = Math.max(maxTimeCLean, coffeeTime[i]) + wash; //maxTimeClean代表上一個杯子洗完後的時間，對比拿到咖啡的時間，誰更晚拿哪個，然後再加洗的時間，得出喝完這杯咖啡後什麼時候才會洗完
+		}
+		int[][] dp = new int[coffeeTime.length + 1][maxTimeCLean + 1];
+		for(int i = coffeeTime.length-1; i >= 0; i--){
+			for(int j = 0; j <= maxTimeCLean; j++){
+				//在j分鐘
+				int cleanByMachine = Math.max(coffeeTime[i], j) + wash; //杯子用機器洗
+				if(cleanByMachine > maxTimeCLean){
+					break;
+				}
+				int nextCoffeeByMachineifthisByMachine = dp[i+1][cleanByMachine]; //這次機器洗，下一個也機器洗
+				int t1 = Math.max(cleanByMachine,nextCoffeeByMachineifthisByMachine);
+
+				int cleanByAir = coffeeTime[i] + air; //杯子用空氣洗
+				int nextCoffeeByMachineifthisnotMachine = dp[i+1][j]; //這次不用機器洗，那麼下一個杯子可以現在洗
+				int t2 = Math.max(cleanByAir, nextCoffeeByMachineifthisnotMachine);
+				dp[i][j] = Math.min(t1,t2);
+			}
+		}
+		return dp[0][0];
+	}
+
+
+
+
 	// for test
 	public static int[] randomArray(int len, int max) {
 		int[] arr = new int[len];
@@ -178,8 +243,7 @@ public class Code03_Coffee {
 		int len = 10;
 		int max = 10;
 		int testTime = 10;
-		System.out.println("测试开始");
-		for (int i = 0; i < testTime; i++) {
+		System.out.println("测试开始");for (int i = 0; i < testTime; i++) {
 			int[] arr = randomArray(len, max);
 			int n = (int) (Math.random() * 7) + 1;
 			int a = (int) (Math.random() * 7) + 1;
@@ -187,12 +251,13 @@ public class Code03_Coffee {
 			int ans1 = right(arr, n, a, b);
 			int ans2 = minTime1(arr, n, a, b);
 			int ans3 = minTime2(arr, n, a, b);
-			if (ans1 != ans2 || ans2 != ans3) {
+			int ans4 = myMinTime(arr, n, a, b);
+			if (ans1 != ans2 || ans2 != ans3 || ans2 != ans4) {
 				printArray(arr);
 				System.out.println("n : " + n);
 				System.out.println("a : " + a);
 				System.out.println("b : " + b);
-				System.out.println(ans1 + " , " + ans2 + " , " + ans3);
+				System.out.println(ans1 + " , " + ans2 + " , " + ans3 + " , " + ans4);
 				System.out.println("===============");
 				break;
 			}
