@@ -50,9 +50,38 @@ public class Code05_BobDie {
 		return dp[r][c][rest];
 	}
 
+
+
+	// my code
+	public static double myLivePosibility(int row, int col, int k, int N, int M){
+		long[][][] dp = new long[N][M][k+1];
+		for(int i = 0; i < N; i++){
+			for(int j = 0; j < M; j++){
+				dp[i][j][0] = 1;
+			}
+		}
+
+		for(int z = 1; z <= k; z++){
+			for(int j = 0; j < M; j++){
+				for(int i = 0; i < N; i++){
+					dp[i][j][z] = pick(dp, N, M, i-1, j, z - 1);
+					dp[i][j][z] += pick(dp, N, M, i+1, j, z - 1);
+					dp[i][j][z] += pick(dp, N, M, i, j-1, z - 1);
+					dp[i][j][z] += pick(dp, N, M, i, j+1, z - 1);
+				}
+			}
+		}
+		return (double) dp[row][col][k] / Math.pow(4, k);
+	}
+
+
+
+
+
 	public static void main(String[] args) {
 		System.out.println(livePosibility1(6, 6, 10, 50, 50));
 		System.out.println(livePosibility2(6, 6, 10, 50, 50));
+		System.out.println(myLivePosibility(6, 6, 10, 50, 50));
 	}
 
 }

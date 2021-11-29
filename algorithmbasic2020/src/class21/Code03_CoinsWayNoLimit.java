@@ -58,6 +58,46 @@ public class Code03_CoinsWayNoLimit {
 		return dp[0][aim];
 	}
 
+
+	//my code
+	public static int myCoinsWay(int[] arr, int aim){
+		if (arr == null || arr.length == 0 || aim < 0) {
+			return 0;
+		}
+		return myProcess(arr, aim, 0);
+	}
+
+	public static int myProcess(int[] arr, int aim, int index){
+		if(index == arr.length){
+			return aim == 0 ? 1 : 0;
+		}
+		int r = 0;
+		for(int i = 0; i * arr[index] <= aim; i++){
+			r += myProcess(arr, aim - (i*arr[index]), index + 1);
+		}
+		return r;
+	}
+
+
+	public static int myCoinsWayDp(int[] arr, int aim){
+		if(arr == null || arr.length == 0 || aim < 0){
+			return 0;
+		}
+		int[][] dp = new int[arr.length + 1][aim + 1];
+		dp[arr.length][0] = 1;
+		for(int i = arr.length - 1; i >= 0; i--){
+			for(int j = 0; j <= aim; j++){
+				int r = 0;
+				for(int k = 0; k * arr[i] <= j; k++){
+					r += dp[i + 1][j - (k * arr[i])];
+				}
+				dp[i][j] = r;
+			}
+		}
+		return dp[0][aim];
+	}
+
+
 	// 为了测试
 	public static int[] randomArray(int maxLen, int maxValue) {
 		int N = (int) (Math.random() * maxLen);
@@ -92,13 +132,16 @@ public class Code03_CoinsWayNoLimit {
 			int ans1 = coinsWay(arr, aim);
 			int ans2 = dp1(arr, aim);
 			int ans3 = dp2(arr, aim);
-			if (ans1 != ans2 || ans1 != ans3) {
+//			int ans4 = myCoinsWay(arr, aim);
+			int ans4 = myCoinsWayDp(arr, aim);
+			if (ans1 != ans2 || ans1 != ans3 || ans3 != ans4) {
 				System.out.println("Oops!");
 				printArray(arr);
 				System.out.println(aim);
 				System.out.println(ans1);
 				System.out.println(ans2);
 				System.out.println(ans3);
+				System.out.println(ans4);
 				break;
 			}
 		}

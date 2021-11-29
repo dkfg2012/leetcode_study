@@ -71,6 +71,52 @@ public class Code02_MinCoinsNoLimit {
 		return dp[0][aim];
 	}
 
+
+
+	//my code
+	public static int myMinCoins(int[] arr, int aim){
+		return myProcess(arr, aim, 0);
+	}
+
+	public static int myProcess(int[] arr, int aim, int index){
+		if(index == arr.length){
+			return aim == 0 ? 0 : Integer.MAX_VALUE;
+		}
+		int r = Integer.MAX_VALUE;
+		for(int i = 0; i*arr[index] <= aim; i++){
+			int next = myProcess(arr, aim - i*arr[index], index + 1);
+			if(next != Integer.MAX_VALUE){
+				r = Math.min(r, i + next);
+			}
+		}
+		return r;
+	}
+
+	public static int myDp(int[] arr, int aim){
+		if(aim == 0){
+			return 0;
+		}
+		int N = arr.length;
+		int[][] dp = new int[N+1][aim+1];
+		dp[N][0] = 0;
+		for(int i = aim; i > 0; i--){
+			dp[N][i] = Integer.MAX_VALUE;
+		}
+		for(int index = N-1; index >= 0; index--){
+			for(int j = 0; j <= aim; j++){
+				int ans = Integer.MAX_VALUE;
+				for(int times = 0; times * arr[index] <= j; times++){
+					int r = dp[index+1][j-(times*arr[index])];
+					if(r != Integer.MAX_VALUE){
+						ans = Math.min(ans, r + times);
+					}
+				}
+				dp[index][j] = ans;
+			}
+		}
+		return dp[0][aim];
+	}
+
 	// 为了测试
 	public static int[] randomArray(int maxLen, int maxValue) {
 		int N = (int) (Math.random() * maxLen);
@@ -105,13 +151,17 @@ public class Code02_MinCoinsNoLimit {
 			int aim = (int) (Math.random() * maxValue);
 			int ans1 = minCoins(arr, aim);
 			int ans2 = dp1(arr, aim);
-			int ans3 = dp2(arr, aim);
+//			int ans3 = dp2(arr, aim);
+//			int ans3 = myMinCoins(arr, aim);
+			int ans3 = myDp(arr, aim);
 			if (ans1 != ans2 || ans1 != ans3) {
 				System.out.println("Oops!");
 				printArray(arr);
 				System.out.println(aim);
+				System.out.println("");
 				System.out.println(ans1);
 				System.out.println(ans2);
+				System.out.println(ans3);
 				break;
 			}
 		}

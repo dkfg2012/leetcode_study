@@ -44,6 +44,28 @@ public class Code01_MinPathSum {
 		return dp[col - 1];
 	}
 
+
+
+	//my code
+	public static int myMinPath(int[][] m){
+		int[][] dp = new int[m.length][m[0].length];
+		dp[0][0] = m[0][0];
+		for(int i = 1; i < m.length; i++){
+			dp[0][i] = dp[0][i-1] + m[0][i];
+		}
+		for(int i = 1; i < m[0].length; i++){
+			dp[i][0] = dp[i-1][0] + m[i][0];
+		}
+		for(int i = 1; i < m.length; i++){
+			for(int j = 1; j < m[0].length; j++){
+				dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1]) + m[i][j];
+			}
+		}
+		return dp[m.length-1][m[0].length-1];
+	}
+
+
+
 	// for test
 	public static int[][] generateRandomMatrix(int rowSize, int colSize) {
 		if (rowSize < 0 || colSize < 0) {
@@ -74,6 +96,7 @@ public class Code01_MinPathSum {
 		int[][] m = generateRandomMatrix(rowSize, colSize);
 		System.out.println(minPathSum1(m));
 		System.out.println(minPathSum2(m));
+		System.out.println(myMinPath(m));
 
 	}
 }

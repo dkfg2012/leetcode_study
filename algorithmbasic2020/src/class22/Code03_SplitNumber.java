@@ -72,14 +72,46 @@ public class Code03_SplitNumber {
 				dp[pre][rest] += dp[pre][rest - pre];
 			}
 		}
+		for(int i = 0; i < dp.length; i++){
+			for(int j = 0; j < dp[0].length; j++){
+				System.out.println(dp[i][j]);
+			}
+			System.out.println("====");
+		}
 		return dp[1][n];
 	}
+
+
+	//my code
+	public static int myWays(int n){
+		return myProcess(n, 1);
+	}
+
+	public static int myProcess(int remain, int pre){
+		if(remain == 0){
+			return 1;
+		}
+		if(pre > remain){
+			return 0;
+		}
+		int ways = 0;
+		for(int i = pre; i <= remain; i++){
+			ways += myProcess(remain - i, i);
+		}
+		return ways;
+	}
+
+//	public static int myDp(int n){
+//		int[][] dp = new int[n+1][n+1];
+//	}
+
 
 	public static void main(String[] args) {
 		int test = 39;
 		System.out.println(ways(test));
 		System.out.println(dp1(test));
 		System.out.println(dp2(test));
+		System.out.println(myWays(test));
 	}
 
 }

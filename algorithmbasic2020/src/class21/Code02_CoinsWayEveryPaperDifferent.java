@@ -33,6 +33,37 @@ public class Code02_CoinsWayEveryPaperDifferent {
 		return dp[0][aim];
 	}
 
+
+	// my code
+	public static int myCoinWay(int[] arr, int aim){
+		return myProcess(arr, aim, 0);
+	}
+
+	public static int myProcess(int[] arr, int aim, int index){
+		if(aim < 0){
+			return 0;
+		}
+		if(index == arr.length){
+			return aim == 0 ? 1 : 0;
+		}else{
+			return myProcess(arr, aim, index+1) + myProcess(arr, aim - arr[index], index + 1);
+		}
+	}
+
+	public static int myCoinWayDp(int[] arr, int aim){
+		int[][] dp = new int[arr.length + 1][aim + 1];
+		dp[arr.length][0] = 1;
+		for(int i = arr.length - 1; i >= 0; i--){
+			for(int j = 0; j <= aim; j++){
+				dp[i][j] = dp[i+1][j] + (j - arr[i] >= 0 ? dp[i+1][j-arr[i]] : 0);
+			}
+		}
+		return dp[0][aim];
+	}
+
+
+
+
 	// 为了测试
 	public static int[] randomArray(int maxLen, int maxValue) {
 		int N = (int) (Math.random() * maxLen);
@@ -62,12 +93,17 @@ public class Code02_CoinsWayEveryPaperDifferent {
 			int aim = (int) (Math.random() * maxValue);
 			int ans1 = coinWays(arr, aim);
 			int ans2 = dp(arr, aim);
-			if (ans1 != ans2) {
+			int ans3 = myCoinWay(arr, aim);
+			int ans4 = myCoinWayDp(arr, aim);
+			if (ans1 != ans2 || ans2 != ans3 || ans3 != ans4) {
 				System.out.println("Oops!");
 				printArray(arr);
 				System.out.println(aim);
+				System.out.println("");
 				System.out.println(ans1);
 				System.out.println(ans2);
+				System.out.println(ans3);
+				System.out.println(ans4);
 				break;
 			}
 		}

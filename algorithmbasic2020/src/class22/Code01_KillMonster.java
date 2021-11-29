@@ -76,6 +76,38 @@ public class Code01_KillMonster {
 		return (double) ((double) kill / (double) all);
 	}
 
+
+
+	//my code
+	public static double myDp(int N, int M, int K){
+		if(N < 1 || M < 1 || K < 1){
+			return 0;
+		}
+		long[][] dp = new long[N+1][K+1];
+		dp[0][0] = 1;
+		for(int times = 1; times <= K; times++){
+			dp[0][times] = (long) Math.pow(M+1, times);
+		}
+		for(int hp = 1; hp <= N; hp++){
+			for(int times = 1; times <= K; times++){
+				int r = 0;
+				for(int i = 0; i <= M; i++){
+					if(hp - i > 0){
+						r += dp[hp - i][times - 1];
+					}else{
+						r += (long) Math.pow(M + 1, times - 1);
+					}
+				}
+				dp[hp][times] = r;
+			}
+		}
+		long kill = dp[N][K];
+		return (double) ((double) kill / Math.pow(M+1, K));
+	}
+
+
+
+
 	public static void main(String[] args) {
 		int NMax = 10;
 		int MMax = 10;
@@ -88,8 +120,12 @@ public class Code01_KillMonster {
 			int K = (int) (Math.random() * KMax);
 			double ans1 = right(N, M, K);
 			double ans2 = dp1(N, M, K);
-			double ans3 = dp2(N, M, K);
+//			double ans3 = dp2(N, M, K);
+			double ans3 = myDp(N, M, K);
 			if (ans1 != ans2 || ans1 != ans3) {
+				System.out.println(ans1);
+				System.out.println(ans2);
+				System.out.println(ans3);
 				System.out.println("Oops!");
 				break;
 			}
