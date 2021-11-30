@@ -199,6 +199,95 @@ public class Code02_SplitSumClosedSizeHalf {
 		return Math.max(dp[N - 1][M][sum], dp[N - 1][N - M][sum]);
 	}
 
+
+	// my code
+	public static int myRight(int[] arr){
+		if(arr == null || arr.length == 0){
+			return 0;
+		}
+		int sum = 0;
+		for(int i : arr){
+			sum += i;
+		}
+		if(arr.length % 2 == 0){
+			return getSum(arr, sum/2, 0, arr.length / 2);
+		}else{
+			return Math.max(getSum(arr, sum/2, 0, arr.length / 2), getSum(arr, sum/2, 0, arr.length / 2 + 1));
+
+		}
+	}
+
+	public static int getSum(int[] arr, int target, int index, int choose){
+		if(index == arr.length){
+			if(choose == 0){
+				return 0;
+			}else{
+				return Integer.MIN_VALUE;
+			}
+		}else{
+			int p1 = getSum(arr, target, index + 1, choose);
+			int p2 = Integer.MIN_VALUE;
+			int next = Integer.MIN_VALUE;
+			if(target - arr[index] >= 0){
+				next = getSum(arr, target - arr[index], index + 1, choose - 1);
+			}
+			if(next != Integer.MIN_VALUE){
+				p2 = arr[index] + next;
+			}
+			return Math.max(p1, p2);
+		}
+	}
+
+
+	public static int myDp(int[] arr){
+		if(arr == null || arr.length < 2){
+			return 0;
+		}
+		int sum = 0;
+		for(int num : arr){
+			sum += num;
+		}
+		sum /= 2;
+		int choose = (arr.length + 1) / 2;
+		int[][][] dp = new int[arr.length + 1][choose + 1][sum + 1];
+		for(int i = 0; i <= arr.length; i++){
+			for(int j = 0; j <= choose; j++){
+				for(int k = 0; k <= sum; k++){
+					dp[i][j][k] = -1;
+				}
+			}
+		}
+		for(int target = 0; target <= sum; target++){
+			dp[arr.length][0][target] = 0;
+		}
+		for(int index = arr.length - 1; index >= 0; index--){
+			for(int chose = 0; chose <= choose; chose++){
+				for(int target = 0; target <= sum; target++){
+					int p1 = dp[index + 1][chose][target];
+					int p2 = -1;
+					int next = -1;
+					if(arr[index] <= target && chose - 1 >= 0){
+						next = dp[index + 1][chose - 1][target - arr[index]];
+					}
+					if(next != -1){
+						p2 = arr[index] + next;
+					}
+					dp[index][chose][target] = Math.max(p1, p2);
+				}
+			}
+		}
+		if(arr.length % 2 == 0){
+			return dp[0][arr.length / 2][sum];
+		}else{
+			return Math.max(dp[0][arr.length / 2][sum], dp[0][(arr.length / 2) + 1][sum]);
+		}
+
+	}
+
+
+
+
+
 	// for test
 	public static int[] randomArray(int len, int value) {
 		int[] arr = new int[len];
@@ -227,7 +316,9 @@ public class Code02_SplitSumClosedSizeHalf {
 			int[] arr = randomArray(len, maxValue);
 			int ans1 = right(arr);
 			int ans2 = dp(arr);
-			int ans3 = dp2(arr);
+//			int ans3 = dp2(arr);
+//			int ans3 = myRight(arr);
+			int ans3 = myDp(arr);
 			if (ans1 != ans2 || ans1 != ans3) {
 				printArray(arr);
 				System.out.println(ans1);

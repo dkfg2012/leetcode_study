@@ -72,12 +72,45 @@ public class Code03_NQueens {
 		return res;
 	}
 
+
+
+	//my code
+	public static int myQueen(int n){
+		if(n < 1 || n > 32){
+			return 0;
+		}
+		int limit = n == 32 ? -1 : (1 << n) - 1;
+		return myProcess(limit, 0,0,0);
+	}
+
+	public static int myProcess(int limit, int center, int left, int right){
+		if(limit == center){
+			return 1;
+		}
+		int allowQueen = limit & (~(center | left | right));
+		int rightMostOne = 0;
+		int res = 0;
+		while(allowQueen != 0){
+			rightMostOne = allowQueen & (~allowQueen + 1);
+			allowQueen = allowQueen - rightMostOne;
+			res += myProcess(limit, center | rightMostOne, (left | rightMostOne) << 1, (right | rightMostOne) >>> 1);
+		}
+		return res;
+	}
+
+
+
 	public static void main(String[] args) {
 		int n = 15;
 
 		long start = System.currentTimeMillis();
 		System.out.println(num2(n));
 		long end = System.currentTimeMillis();
+		System.out.println("cost time: " + (end - start) + "ms");
+
+		start = System.currentTimeMillis();
+		System.out.println(myQueen(n));
+		end = System.currentTimeMillis();
 		System.out.println("cost time: " + (end - start) + "ms");
 
 		start = System.currentTimeMillis();
