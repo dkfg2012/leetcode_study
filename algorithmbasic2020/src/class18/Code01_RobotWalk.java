@@ -125,13 +125,30 @@ public class Code01_RobotWalk {
 	}
 
 
+	//revision code
+	public static int revisionWay(int N, int start, int aim, int K){
+		int[][] dp = new int[N+1][K+1];
+		dp[aim][0] = 1;
+		for(int walks = 1; walks <= K; walks++){
+			for(int i = 2; i < N; i++){
+				dp[1][walks] = dp[2][walks - 1];
+				dp[N][walks] = dp[N-1][walks - 1];
+
+				dp[i][walks] = dp[i + 1][walks - 1] + dp[i - 1][walks - 1];
+			}
+		}
+		return dp[start][K];
+	}
+
+
 
 	public static void main(String[] args) {
-		System.out.println(ways1(10, 2, 4, 5));
-		System.out.println(ways2(10, 2, 4, 5));
-		System.out.println(ways3(10, 2, 4, 5));
-		System.out.println(myWay(10, 2, 4, 5));
-		System.out.println(myWay2(10, 2, 4, 5));
+		System.out.println(ways1(10, 3, 4, 5));
+		System.out.println(ways2(10, 3, 4, 5));
+		System.out.println(ways3(10, 3, 4, 5));
+		System.out.println(myWay(10, 3, 4, 5));
+		System.out.println(myWay2(10, 3, 4, 5));
+		System.out.println(revisionWay(10, 3, 4, 5));
 	}
 
 }

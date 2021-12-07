@@ -42,7 +42,7 @@ public class Code01_Knapsack {
 			for (int rest = 0; rest <= bag; rest++) {
 				int p1 = dp[index + 1][rest];
 				int p2 = 0;
-				int next = rest - w[index] < 0 ? -1 : dp[index + 1][rest - w[index]];
+					int next = rest - w[index] < 0 ? -1 : dp[index + 1][rest - w[index]];
 				if (next != -1) {
 					p2 = v[index] + next;
 				}

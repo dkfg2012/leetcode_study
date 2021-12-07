@@ -48,15 +48,18 @@ public class Code02_SplitSumClosedSizeHalf {
 		int N = arr.length;
 		int M = (N + 1) / 2;
 		int[][][] dp = new int[N + 1][M + 1][sum + 1];
-		for (int i = 0; i <= N; i++) {
-			for (int j = 0; j <= M; j++) {
-				for (int k = 0; k <= sum; k++) {
-					dp[i][j][k] = -1;
-				}
-			}
-		}
+//		for (int i = 0; i <= N; i++) {
+//			for (int j = 0; j <= M; j++) {
+//				for (int k = 0; k <= sum; k++) {
+//					dp[i][j][k] = -1;
+//				}
+//			}
+//		}
 		for (int rest = 0; rest <= sum; rest++) {
 			dp[N][0][rest] = 0;
+			for(int p = 1; p < M+1; p++){
+				dp[N][p][rest] = -1;
+			}
 		}
 		for (int i = N - 1; i >= 0; i--) {
 			for (int picks = 0; picks <= M; picks++) {

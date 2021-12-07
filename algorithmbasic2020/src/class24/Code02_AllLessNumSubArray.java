@@ -63,6 +63,46 @@ public class Code02_AllLessNumSubArray {
 		return count;
 	}
 
+	//my code
+	public static int myGetNum(int[] arr, int sum){
+		if(arr == null || arr.length == 0 || sum < 0){
+			return 0;
+		}
+		int r = 0;
+		LinkedList<Integer> minWindow = new LinkedList<>();
+		LinkedList<Integer> maxWindow = new LinkedList<>();
+		int rightB = 0;
+		for(int leftB = 0; leftB < arr.length; leftB++){
+			while(rightB < arr.length){
+				while(!minWindow.isEmpty() && arr[rightB] <= arr[minWindow.peekLast()]){
+					minWindow.pollLast();
+				}
+				minWindow.addLast(rightB);
+				while(!maxWindow.isEmpty() && arr[rightB] >= arr[maxWindow.peekLast()]){
+					maxWindow.pollLast();
+				}
+				maxWindow.addLast(rightB);
+				if(arr[maxWindow.peekFirst()] - arr[minWindow.peekFirst()] <= sum){
+					rightB++;
+				}else{
+					break;
+				}
+			}
+			// the subarray is start from leftB to rightB
+			// assume 0 - 2 is a valid subarray, then 0 - 1, 0 - 0 are also valid subarray
+			// then there are 3 - 0 subarray (since it is rightB++)
+			r += rightB - leftB;
+			if(maxWindow.peekFirst() == leftB){
+				maxWindow.pollFirst();
+			}
+			if(minWindow.peekFirst() == leftB){
+				minWindow.pollFirst();
+			}
+		}
+
+		return r;
+	}
+
 	// for test
 	public static int[] generateRandomArray(int maxLen, int maxValue) {
 		int len = (int) (Math.random() * (maxLen + 1));
@@ -92,7 +132,8 @@ public class Code02_AllLessNumSubArray {
 			int[] arr = generateRandomArray(maxLen, maxValue);
 			int sum = (int) (Math.random() * (maxValue + 1));
 			int ans1 = right(arr, sum);
-			int ans2 = num(arr, sum);
+//			int ans2 = num(arr, sum);
+			int ans2 = myGetNum(arr, sum);
 			if (ans1 != ans2) {
 				System.out.println("Oops!");
 				printArray(arr);

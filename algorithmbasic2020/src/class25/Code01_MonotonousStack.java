@@ -67,6 +67,49 @@ public class Code01_MonotonousStack {
 		return res;
 	}
 
+
+
+	//my code
+	//array[0] nearest left side smaller than self
+	//array[1] nearest right side smaller than self
+	public static int[][] myNoRepeet(int[] arr){
+		int[][] res = new int[arr.length][2];
+		Stack<Integer> s = new Stack<>();
+		for(int i = 0; i < arr.length; i++){
+			while(!s.isEmpty() && arr[s.peek()] > arr[i]){
+				int index = s.pop();
+				int LeftsmallerThanIndex = s.isEmpty() ? -1 : s.peek();
+				res[index][0] = LeftsmallerThanIndex; //item below self it the nearest item smaller than self on the left
+													  //since this is a monotonouse stack, those in bottom is the smaller than self, and locate on the left side
+				res[index][1] = i; //only smaller than self and remove self, since we add from left to right,
+								   // therefore those can pop self is the nearest one smaller than self at the right
+			}
+			s.push(i);
+		}
+		while(!s.isEmpty()){
+			int index = s.pop();
+			int LeftsmallerThanIndex = s.isEmpty() ? -1 : s.peek();
+			res[index][0] = LeftsmallerThanIndex;
+			res[index][1] = -1;
+		}
+		return res;
+	}
+//
+//
+//	public static int[][] myWithRepeat(int[] arr){
+//		int[][] res = new int[arr.length][2];
+//		Stack<List<Integer>> stack = new Stack<>();
+//		for(int i = 0; i < arr.length; i++){
+//			while(!stack.isEmpty() && arr[stack.peek().get(0)] > arr[i]){
+//				List<Integer> popIndex = stack.pop();
+//				int leftLessIndex = stack.isEmpty() ? -1 : stack.peek().get(0)
+//
+//			}
+//		}
+//	}
+//
+
+
 	// for test
 	public static int[] getRandomArrayNoRepeat(int size) {
 		int[] arr = new int[(int) (Math.random() * size) + 1];
@@ -144,7 +187,7 @@ public class Code01_MonotonousStack {
 	public static void main(String[] args) {
 		int size = 10;
 		int max = 20;
-		int testTimes = 2000000;
+		int testTimes = 5;
 		System.out.println("测试开始");
 		for (int i = 0; i < testTimes; i++) {
 			int[] arr1 = getRandomArrayNoRepeat(size);
