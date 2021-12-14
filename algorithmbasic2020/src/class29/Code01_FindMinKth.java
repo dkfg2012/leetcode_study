@@ -29,6 +29,7 @@ public class Code01_FindMinKth {
 		return maxHeap.peek();
 	}
 
+
 	// 改写快排，时间复杂度O(N)
 	// k >= 1
 	public static int minKth2(int[] array, int k) {
@@ -145,6 +146,59 @@ public class Code01_FindMinKth {
 		}
 	}
 
+
+	// my code
+	public static class myComparator implements Comparator<Integer>{
+		@Override
+		public int compare(Integer i1, Integer i2){
+			return i2 - i1;
+		}
+	}
+
+	public static int myMinK1(int[] arr, int k){
+		PriorityQueue<Integer> pq = new PriorityQueue<>(new myComparator());
+		for(int i = 0; i < arr.length; i++){
+			pq.add(arr[i]);
+		}
+		int i = arr.length - k;
+		while(i > 0){
+			pq.poll();
+			i--;
+		}
+		return pq.peek();
+	}
+
+	public static int myMinK2(int[] arr, int k){
+		PriorityQueue<Integer> pq = new PriorityQueue<>(new myComparator());
+		for(int i = 0; i < arr.length; i++){
+			if(i < k){
+				pq.add(arr[i]);
+				continue;
+			}else{
+				if(arr[i] < pq.peek()){
+					pq.poll();
+					pq.add(arr[i]);
+				}
+			}
+		}
+		return pq.peek();
+	}
+
+
+	public static int myQuickSortApproach(int[] array, int k)
+	}
+
+	public static int[] myPartition(int[] arr, int L, int R){
+	}
+
+	public static void mySwap(int[] arr, int i1, int i2){
+		int tmp = arr[i1];
+		arr[i1] = arr[i2];
+		arr[i2] = tmp;
+	}
+
+
+
 	// for test
 	public static int[] generateRandomArray(int maxSize, int maxValue) {
 		int[] arr = new int[(int) (Math.random() * maxSize) + 1];
@@ -154,21 +208,46 @@ public class Code01_FindMinKth {
 		return arr;
 	}
 
+	public static void printArray(int[] arr){
+		for(int i = 0; i < arr.length; i++){
+			System.out.println(arr[i]);
+		}
+	}
+
 	public static void main(String[] args) {
 		int testTime = 1000000;
 		int maxSize = 100;
 		int maxValue = 100;
+		long time1 = 0;
+		long time2 = 0;
 		System.out.println("test begin");
+//		int[] i = {1,2,3,4,5};
+//		System.out.println(myMinK2(i, 2));
+
 		for (int i = 0; i < testTime; i++) {
 			int[] arr = generateRandomArray(maxSize, maxValue);
 			int k = (int) (Math.random() * arr.length) + 1;
+
+//			long start1 = System.nanoTime();
 			int ans1 = minKth1(arr, k);
+//			time1 += System.nanoTime() - start1;
+
+//			long start2 = System.nanoTime();
+//			int ans2 = myMinK2(arr, k);
+//			time2 += System.nanoTime() - start2;
+
 			int ans2 = minKth2(arr, k);
 			int ans3 = minKth3(arr, k);
 			if (ans1 != ans2 || ans2 != ans3) {
+				System.out.println(ans1);
+				System.out.println(ans2);
+				System.out.println(ans3);
 				System.out.println("Oops!");
+				break;
 			}
 		}
+		System.out.println(time1 / testTime);
+		System.out.println(time2 / testTime);
 		System.out.println("test finish");
 	}
 

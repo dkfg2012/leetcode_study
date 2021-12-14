@@ -164,11 +164,66 @@ public class Code02_FibonacciProblem {
 		return 3 * res[0][0] + 2 * res[1][0] + res[2][0];
 	}
 
+
+	//my code
+	public static int[][] myMatrixPower(int[][] m, int p){
+		int[][] resMatrix = new int[m.length][m[0].length];
+		for(int i = 0; i < resMatrix.length; i++){
+			resMatrix[i][i] = 1;
+		}
+		int[][] t = m;
+		while(p != 0){
+			if((p & 1) == 1){
+				resMatrix = myMultiplyMatrix(resMatrix, t);
+			}
+			t = myMultiplyMatrix(t,t);
+			p >>= 1;
+		}
+		return resMatrix;
+	}
+
+	public static int[][] myMultiplyMatrix(int[][] m1, int[][] m2){
+		int[][] res = new int[m1.length][m2[0].length];
+		for(int i = 0; i < m1.length; i++){
+			for(int j = 0; j < m2[0].length; j++){
+				for(int k = 0; k < m1[0].length; k++){
+					res[i][j] += m1[i][k] * m2[k][j];
+				}
+			}
+		}
+		return res;
+	}
+
+
+	public static int myFibonacci(int n) {
+		if (n < 1) {
+			return 0;
+		}
+		if (n == 1 || n == 2) {
+			return 1;
+		}
+		int[][] base = {
+				{ 1, 1 },
+				{ 1, 0 }
+		};
+		int[][] res = myMatrixPower(base, n - 2);
+		for(int i = 0; i < res.length; i++){
+			for(int j = 0; j < res[0].length; j++){
+				System.out.print(res[i][j] + " ");
+				System.out.println("--------");
+			}
+		}
+		return res[0][0] + res[1][0];
+	}
+
+
+
 	public static void main(String[] args) {
 		int n = 19;
 		System.out.println(f1(n));
 		System.out.println(f2(n));
 		System.out.println(f3(n));
+		System.out.println(myFibonacci(n));
 		System.out.println("===");
 
 		System.out.println(s1(n));

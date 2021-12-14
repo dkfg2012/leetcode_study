@@ -97,11 +97,31 @@ public class Code03_ZeroLeftOneStringNumber {
 		return res;
 	}
 
+	//my code
+	public static int mySteps(int n){
+		if(n < 1){
+			return 0;
+		}
+		return myStepProcess(1, n);
+	}
+
+	public static int myStepProcess(int i, int n){
+		if(i == n - 1){
+			return 2;
+		}
+		if(i == n){
+			return 1;
+		}
+		return myStepProcess(i + 1, n) + myStepProcess(i + 2, n);
+	}
+
+
 	public static void main(String[] args) {
 		for (int i = 0; i != 20; i++) {
 			System.out.println(getNum1(i));
 			System.out.println(getNum2(i));
 			System.out.println(getNum3(i));
+			System.out.println(mySteps(i));
 			System.out.println("===================");
 		}
 

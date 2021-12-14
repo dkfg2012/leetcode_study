@@ -55,8 +55,8 @@ public class Code03_IsRotation {
 	}
 
 	public static void main(String[] args) {
-		String str1 = "yunzuocheng";
-		String str2 = "zuochengyun";
+		String str1 = "sssss";
+		String str2 = "ss";
 		System.out.println(isRotation(str1, str2));
 
 	}
