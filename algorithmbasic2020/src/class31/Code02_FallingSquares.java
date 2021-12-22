@@ -107,3 +107,57 @@ public class Code02_FallingSquares {
 	}
 
 }
+
+
+class Solution {
+    public class SegmentTree{
+        private int[] maxArray;
+        private int[] updateArray;
+        private boolean[] changeArray;
+
+        public SegmentTree(int size){
+            int N = size + 1;
+            maxArray = new int[N << 2];
+            updateArray = new int[N << 2];
+            changeArray = new boolean[N << 2];
+        }
+
+        private void pushUp(int root){
+            maxArray[root] = Math.max(maxArray[root << 1], maxArray[root << 1 | 1]);
+        }
+
+        private void pushDown(int root, int LeftTNo, int RightTNo){
+            if(changeArray[root]){
+                changeArray[root] = false;
+                changeArray[root << 1] = true;
+                changeArray[root << 1 | 1] = true;
+                updateArray[root << 1] = updateArray[root];
+                updateArray[root << 1 | 1] = updateArray[root];
+                maxArray[root << 1] = updateArray[root];
+                maxArray[root << 1 | 1] = updateArray[root];
+            }
+        }
+
+        public int query(int L, int R, int curL, int curR, int root){
+            if(L <= curL && curR <= R){
+                return maxArray[root];
+            }
+            int mid = (curL + curR) >> 1;
+            pushDown(root, mid - curL + 1, curR - mid);
+            int left = 0;
+            int right = 0;
+            if(L <= mid){
+                left = query(L, R, curL, mid, root << 1);
+            }
+            if(mid < R){
+                right = query(L, R, mid + 1, curR, root << 1 | 1);
+            }
+            return Math.max(left, right);
+        }
+
+    }
+
+    public List<Integer> fallingSquares(int[][] positions) {
+
+    }
+}

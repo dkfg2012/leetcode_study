@@ -1,6 +1,6 @@
 package class30;
 
-public class Code05_MinHeight {
+public class   Code05_MinHeight {
 
 	public static class Node {
 		public int val;

@@ -1,6 +1,8 @@
 package class29;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Code02_MaxTopK {
 
@@ -138,6 +140,86 @@ public class Code02_MaxTopK {
 		return new int[] { less + 1, more - 1 };
 	}
 
+
+	//my code
+	public static int[] myTopKBFPRT(int[] arr, int k){
+		if(arr == null || arr.length == 0){
+			return new int[0];
+		}
+		int size = Math.min(arr.length, k);
+		int[] r = new int[size];
+		int tIndex = Math.min(k, arr.length);
+		int pivot = myBFPRT(arr, 0, arr.length - 1, tIndex-1);
+		int index = 0;
+		for(int i = 0; i < arr.length; i++){
+			if(arr[i] > pivot){
+				r[index++] = arr[i];
+			}
+		};
+		while(index < r.length){
+			r[index++] = pivot;
+		}
+		return r;
+	}
+
+	public static int[] myPartition(int[] arr, int L, int R, int pivot){
+		int LargeRightB = L - 1;
+		int lessLeftB = R + 1;
+		int current = L;
+		while(current < lessLeftB){
+			if(arr[current] < pivot){
+				swap(arr, current, --lessLeftB);
+			}else if(arr[current] > pivot){
+				swap(arr, current++, ++LargeRightB);
+			}else{
+				current++;
+			}
+		}
+		return new int[] { LargeRightB + 1, lessLeftB - 1};
+	}
+
+	public static int myBFPRT(int[] arr, int L, int R, int index){
+		if(L == R){
+			return arr[L];
+		}
+		int pivot = MedianOfMedian(arr, L, R);
+		int[] range = myPartition(arr, L, R, pivot);
+		if(index >= range[0] && index <= range[1]){
+			return arr[index];
+		}else if(index > range[1]){
+			return myBFPRT(arr, range[1] + 1, R, index);
+		}else{
+			return myBFPRT(arr, L, range[0] - 1, index);
+		}
+
+	}
+
+	public static int MedianOfMedian(int[] arr, int L, int R){
+		int size = R - L + 1;
+		int offset = size % 5 == 0 ? 0 : 1;
+		int[] medianArray = new int[size / 5 + offset];
+		for(int i = 0; i < medianArray.length; i++){
+			int leftB = L + i * 5;
+			medianArray[i] = getMedian(arr, leftB, Math.min(R, leftB + 4));
+		}
+		return myBFPRT(medianArray, 0, medianArray.length - 1, medianArray.length >> 1);
+
+	}
+
+	public static int getMedian(int[] arr, int L, int R){
+		insertionSort(arr, L, R);
+		return arr[(L + R) >> 1];
+	}
+
+	public static void insertionSort(int[] arr, int L, int R) {
+		for (int i = L + 1; i <= R; i++) {
+			for (int j = i - 1; j >= L && arr[j] < arr[j + 1]; j--) {
+				swap(arr, j, j + 1);
+			}
+		}
+	}
+
+
 	// for test
 	public static int[] generateRandomArray(int maxSize, int maxValue) {
 		int[] arr = new int[(int) ((maxSize + 1) * Math.random())];
@@ -162,6 +244,10 @@ public class Code02_MaxTopK {
 
 	// for test
 	public static boolean isEqual(int[] arr1, int[] arr2) {
+		int[] a1 = copyArray(arr1);
+		Arrays.sort(a1);
+		int[] a2 = copyArray(arr2);
+		Arrays.sort(a2);
 		if ((arr1 == null && arr2 != null) || (arr1 != null && arr2 == null)) {
 			return false;
 		}
@@ -172,11 +258,19 @@ public class Code02_MaxTopK {
 			return false;
 		}
 		for (int i = 0; i < arr1.length; i++) {
-			if (arr1[i] != arr2[i]) {
+//			if (arr1[i] != arr2[i]) {
+//				return false;
+//			}
+			if (a1[i] != a2[i]) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	public static boolean contains(final int[] array, final int key) {
+		Arrays.sort(array);
+		return Arrays.binarySearch(array, key) >= 0;
 	}
 
 	// for test
@@ -193,8 +287,12 @@ public class Code02_MaxTopK {
 	// 生成随机数组测试
 	public static void main(String[] args) {
 		int testTime = 500000;
+//		int testTime = 20;
 		int maxSize = 100;
 		int maxValue = 100;
+		long time1 = 0;
+		long time2 = 0;
+		long time3 = 0;
 		boolean pass = true;
 		System.out.println("测试开始，没有打印出错信息说明测试通过");
 		for (int i = 0; i < testTime; i++) {
@@ -205,9 +303,19 @@ public class Code02_MaxTopK {
 			int[] arr2 = copyArray(arr);
 			int[] arr3 = copyArray(arr);
 
-			int[] ans1 = maxTopK1(arr1, k);
+			long start1 = System.nanoTime();
+//			int[] ans1 = maxTopK1(arr1, k);
+			int[] ans1 = myTopKBFPRT(arr1, k);
+			time1 += System.nanoTime() - start1;
+
+			long start2 = System.nanoTime();
 			int[] ans2 = maxTopK2(arr2, k);
+			time2 += System.nanoTime() - start2;
+
+			long start3 = System.nanoTime();
 			int[] ans3 = maxTopK3(arr3, k);
+			time3 += System.nanoTime() - start3;
+
 			if (!isEqual(ans1, ans2) || !isEqual(ans1, ans3)) {
 				pass = false;
 				System.out.println("出错了！");
@@ -217,6 +325,9 @@ public class Code02_MaxTopK {
 				break;
 			}
 		}
+		System.out.println(time1 / testTime);
+		System.out.println(time2 / testTime);
+		System.out.println(time3 / testTime);
 		System.out.println("测试结束了，测试了" + testTime + "组，是否所有测试用例都通过？" + (pass ? "是" : "否"));
 	}
 

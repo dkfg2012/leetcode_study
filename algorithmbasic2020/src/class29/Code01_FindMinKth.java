@@ -2,6 +2,7 @@ package class29;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Code01_FindMinKth {
 
@@ -185,17 +186,88 @@ public class Code01_FindMinKth {
 	}
 
 
-	public static int myQuickSortApproach(int[] array, int k)
+	public static int myQuickSortApproach(int[] array, int k){
+		return myQuickSort(array, 0, array.length - 1, k - 1);
 	}
 
-	public static int[] myPartition(int[] arr, int L, int R){
+	public static int myQuickSort(int[] arr, int L, int R, int index){
+		if(L == R){
+			return arr[L];
+		}
+		int pivot = arr[L + (int)(Math.random() * (R - L + 1))];
+		int[] range = myPartition(arr, L, R, pivot);
+		if(index >= range[0] && index <= range[1]){
+			return arr[index];
+		}else if(index < range[0]){
+			return myQuickSort(arr, L, range[0] - 1, index);
+		}else{
+			return myQuickSort(arr, range[1] + 1, R, index);
+		}
 	}
 
-	public static void mySwap(int[] arr, int i1, int i2){
-		int tmp = arr[i1];
-		arr[i1] = arr[i2];
-		arr[i2] = tmp;
+	public static int[] myPartition(int[] arr, int L, int R, int pivot){
+		int lessRightB = L - 1;
+		int largeLeftB = R + 1;
+		int index = L;
+		while(index < largeLeftB){
+			if(arr[index] < pivot){
+				swap(arr, ++lessRightB, index++);
+			}else if(arr[index] > pivot){
+				swap(arr, index, --largeLeftB);
+			}else{
+				index++;
+			}
+		}
+		return new int[] {lessRightB + 1, largeLeftB - 1};
 	}
+
+
+	public static int myBFPRTApproach(int[] arr, int k){
+		return myBFPRT(arr, k - 1, 0, arr.length - 1);
+	}
+
+	public static int myBFPRT(int[] arr, int index, int L, int R){
+		if (L == R){
+			return arr[L];
+		}
+		int pivot = myFindMedian(arr, L, R);
+		int[] range = myPartition(arr, L, R, pivot);
+		if(index >= range[0] && index <= range[1]){
+			return arr[index];
+		}else if(index < range[0]){
+			return myBFPRT(arr, index, L, range[0] - 1);
+		}else{
+			return myBFPRT(arr, index, range[1] + 1, R);
+		}
+	}
+
+	public static int myFindMedian(int[] arr, int L, int R){
+		int size = R - L + 1;
+		int offset = size % 5 == 0 ? 0 : 1;
+		int[] medianArray = new int[size / 5 + offset];
+		for(int i = 0; i < medianArray.length; i++){
+			int t = L + i * 5;
+			medianArray[i] = myGetMedian(arr, t, Math.min(R, t + 4));
+		}
+		return myBFPRT(medianArray, medianArray.length / 2, 0, medianArray.length - 1);
+//		return bfprt(medianArray, 0, medianArray.length - 1, medianArray.length / 2);
+	}
+
+	public static int myGetMedian(int[] arr, int L, int R){
+		insertionSort(arr, L, R);
+		return arr[(L + R) / 2];
+	}
+
+	public static void myInsertionSort(int[] arr, int L, int R){
+		for(int i = L + 1; i <= R; i++){
+			for(int j = i - 1; j >= 0; j--){
+				if(arr[j] > arr[j + 1]){
+					swap(arr, j, j + 1);
+				}
+			}
+		}
+	}
+
 
 
 
@@ -228,16 +300,21 @@ public class Code01_FindMinKth {
 			int[] arr = generateRandomArray(maxSize, maxValue);
 			int k = (int) (Math.random() * arr.length) + 1;
 
-//			long start1 = System.nanoTime();
-			int ans1 = minKth1(arr, k);
-//			time1 += System.nanoTime() - start1;
+			long start1 = System.nanoTime();
+//			int ans1 = minKth1(arr, k);
+//			int ans1 = myQuickSortApproach(arr, k);
+			int ans1 = myBFPRTApproach(arr, k);
+			time1 += System.nanoTime() - start1;
 
-//			long start2 = System.nanoTime();
+			long start2 = System.nanoTime();
 //			int ans2 = myMinK2(arr, k);
-//			time2 += System.nanoTime() - start2;
 
 			int ans2 = minKth2(arr, k);
+			time2 += System.nanoTime() - start2;
+
+//			long start1 = System.nanoTime();
 			int ans3 = minKth3(arr, k);
+//			time1 += System.nanoTime() - start1;
 			if (ans1 != ans2 || ans2 != ans3) {
 				System.out.println(ans1);
 				System.out.println(ans2);

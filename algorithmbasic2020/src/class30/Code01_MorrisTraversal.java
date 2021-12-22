@@ -1,6 +1,6 @@
 package class30;
 
-public class Code01_MorrisTraversal {
+public class 	Code01_MorrisTraversal {
 
 	public static class Node {
 		public int value;
