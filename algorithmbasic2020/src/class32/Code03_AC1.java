@@ -83,7 +83,7 @@ public class Code03_AC1 {
 					}
 					{ // 不同的需求，在这一段{ }之间修改
 						ans += follow.end;
-						follow.end = -1;
+//						follow.end = -1;
 					} // 不同的需求，在这一段{ }之间修改
 					follow = follow.fail;
 				}
@@ -99,7 +99,7 @@ public class Code03_AC1 {
 		ac.insert("he");
 		ac.insert("c");
 		ac.build();
-		System.out.println(ac.containNum("cdhe"));
+		System.out.println(ac.containNum("cdhedhe"));
 	}
 
 }

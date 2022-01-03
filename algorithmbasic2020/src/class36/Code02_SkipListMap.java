@@ -94,6 +94,7 @@ public class Code02_SkipListMap {
 				find.val = value;
 			} else { // find == null   8   7   9
 				size++;
+
 				int newNodeLevel = 0;
 				while (Math.random() < PROBABILITY) {
 					newNodeLevel++;
@@ -239,9 +240,9 @@ public class Code02_SkipListMap {
 		test.remove("D");
 		printAll(test);
 		System.out.println("======================");
-		System.out.println(test.floorKey("D"));
-		System.out.println(test.ceilingKey("D"));
-		
+		System.out.println(test.floorKey("E"));
+		System.out.println(test.ceilingKey("E"));
+
 
 	}
 

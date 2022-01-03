@@ -1,6 +1,6 @@
 package class37;
 
-import java.util.HashSet;
+import java.util.*;
 
 public class Code01_CountofRangeSum {
 
@@ -174,7 +174,7 @@ public class Code01_CountofRangeSum {
 			sum += nums[i];
 			// [sum - upper, sum - lower]
 			// [10, 20] ?
-			// < 10 ?  < 21 ?   
+			// < 10 ?  < 21 ?
 			long a = treeSet.lessKeySize(sum - lower + 1);
 			long b = treeSet.lessKeySize(sum - upper);
 			ans += a - b;
@@ -182,6 +182,61 @@ public class Code01_CountofRangeSum {
 		}
 		return ans;
 	}
+
+
+	//my code
+	public static class myComparator implements Comparator<tryNode> {
+		@Override
+		public int compare(tryNode o1, tryNode o2) {
+			return o1.key - o2.key;
+		}
+	}
+
+	public static class tryNode{
+		public int key;
+		public int number;
+
+		public tryNode(int key, int number){
+			this.key = key;
+			this.number = number;
+		}
+	}
+
+	public static int myCountRangeSum(int[] nums, int lower, int upper){
+		TreeSet<Integer> map = new TreeSet<>();
+		HashMap<Integer, Integer> hm = new HashMap<>();
+		int sum = 0;
+		int ans = 0;
+		map.add(0);
+		hm.put(0,1);
+		for(int i = 0; i < nums.length; i++){
+			sum += nums[i];
+			int ta = sum - lower + 1;
+			int tb = sum - upper;
+			ArrayList<Integer> a = new ArrayList<>();
+			ArrayList<Integer> b = new ArrayList<>();
+
+			map.stream().filter(integer -> integer < ta).forEach(integer -> {
+				for(int j = 0; j < hm.get(integer); j++){
+					a.add(1);
+				}
+			});
+			map.stream().filter(integer -> integer < tb).forEach(integer -> {
+				for(int j = 0; j < hm.get(integer); j++){
+					b.add(1);
+				}
+			});
+			ans += a.size() - b.size();
+			if(map.contains(sum)){
+				hm.put(sum, hm.get(sum) + 1);
+			}else{
+				map.add(sum);
+				hm.put(sum, 1);
+			}
+		}
+		return ans;
+	}
+
 
 	// for test
 	public static void printArray(int[] arr) {
@@ -201,22 +256,25 @@ public class Code01_CountofRangeSum {
 	}
 
 	public static void main(String[] args) {
-		int len = 200;
-		int varible = 50;
+		int len = 100;
+		int varible = 100;
 		for (int i = 0; i < 10000; i++) {
 			int[] test = generateArray(len, varible);
 			int lower = (int) (Math.random() * varible) - (int) (Math.random() * varible);
 			int upper = lower + (int) (Math.random() * varible);
 			int ans1 = countRangeSum1(test, lower, upper);
 			int ans2 = countRangeSum2(test, lower, upper);
-			if (ans1 != ans2) {
+			int ans3 = myCountRangeSum(test, lower, upper);
+			if (ans1 != ans2 || ans2 != ans3) {
 				printArray(test);
-				System.out.println(lower);
-				System.out.println(upper);
 				System.out.println(ans1);
 				System.out.println(ans2);
+				System.out.println(ans3);
+				System.out.println("fail");
+				break;
 			}
 		}
+		System.out.println("done");
 
 	}
 

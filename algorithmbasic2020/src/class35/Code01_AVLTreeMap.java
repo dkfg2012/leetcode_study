@@ -254,4 +254,15 @@ public class Code01_AVLTreeMap {
 
 	}
 
+	public static void main(String args[]){
+		AVLTreeMap<Integer, String> avl = new AVLTreeMap<>();
+		avl.put(2, "a");
+		avl.put(5, "b");
+		avl.put(9, "v");
+		avl.put(1, "d");
+		avl.put(13, "h");
+		avl.put(16, "e");
+		String s = String.valueOf(avl.floorKey(3));
+		System.out.println(s);
+	}
 }
